@@ -7,7 +7,7 @@ import View.frmPrincipal;
 import com.formdev.flatlaf.FlatLightLaf;
 
 
-public class EcosistemaSimulador {
+public class Ecosistema {
     public static void main(String[] args) {
 
             //IMportacion de librería FlatLaf, para interfaz moderna
