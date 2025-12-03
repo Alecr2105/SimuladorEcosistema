@@ -59,31 +59,10 @@ public class AuthService {
         
         //Saving in the file:
         userDAO.guardarUsuario(nuevo);
-        JOptionPane.showMessageDialog(null, "Usuario registrado correctamente.");
+        JOptionPane.showMessageDialog(null, "Usuario registrado exitosamente.");
         enviarCorreoRegistro(nuevo);
         return true;
     }
-    
-    private void enviarCorreoRegistro(Usuario usuario) {
-        try {
-            String asunto = "Cuenta creada en Ecosistemas";
-            String mensaje = "Su cuenta se ha creado correctamente.";
-            emailService.enviarCorreo(usuario.getCorreo(), asunto, mensaje);
-        } catch (RuntimeException e) {
-            JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de registro: " + e.getMessage());
-        }
-    }
-
-    private void enviarCorreoInicioSesion(Usuario usuario) {
-        try {
-            String asunto = "Inicio de sesión en Ecosistemas";
-            String mensaje = "Se ha iniciado sesión en su cuenta de ecosistemas.";
-            emailService.enviarCorreo(usuario.getCorreo(), asunto, mensaje);
-        } catch (RuntimeException e) {
-            JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de inicio de sesión: " + e.getMessage());
-        }
-    }
-    
     
     
     
@@ -101,8 +80,29 @@ public class AuthService {
                 sb.append(String.format("%02x", b));
             }
             return  sb.toString();//Send to file users.txt
-        }catch(NoSuchAlgorithmException ex){
-            throw  new RuntimeException("Error al encriptar la contraseña ingresada: " + ex.getMessage());
+        }catch(NoSuchAlgorithmException e){
+            throw  new RuntimeException("Error al encriptar la contraseña ingresada: " + e.getMessage());
+        }
+    }
+    //Notificaciones por correo:
+    //**************************
+    private void enviarCorreoRegistro(Usuario usuario) {
+        try {
+            String asunto = "Cuenta creada en EcoSim";
+            String mensaje = "Su cuenta se ha creado exitosamente.";
+            emailService.enviarCorreo(usuario.getCorreo(), asunto, mensaje);
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de registro: " + e.getMessage());
+        }
+    }
+
+    private void enviarCorreoInicioSesion(Usuario usuario) {
+        try {
+            String asunto = "Inicio de sesión en EcoSim";
+            String mensaje = "Se ha iniciado sesión en su cuenta de EcoSim.";
+            emailService.enviarCorreo(usuario.getCorreo(), asunto, mensaje);
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de inicio de sesión: " + e.getMessage());
         }
     }
 }

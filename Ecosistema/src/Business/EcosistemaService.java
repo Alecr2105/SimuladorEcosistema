@@ -13,6 +13,8 @@ public class EcosistemaService {
     private AlimentacionService alimentacionService;
     private ReproduccionService reproduccionService;
 
+    
+    
     public EcosistemaService() {
         ecosistema = new Ecosistema();
         ecosistemaDAO = new EcosistemaDAO();
@@ -22,9 +24,11 @@ public class EcosistemaService {
         reproduccionService = new ReproduccionService();
     }
 
-    // ========== GENERACIÓN DE ESCENARIO ==========
-
-    // Versión sin tercera especie (compatibilidad)
+    
+    
+    
+    //Generamos los escenarios:
+    //**********************************************************
     public void generarEscenario(int presas, int depredadores) {
         ecosistema.generarEscenario(presas, depredadores);
     }

@@ -47,7 +47,7 @@ public class ValidacionUtil {
                 toLocalDate();
         LocalDate hoy = LocalDate.now();
         
-        int edad =Period.between(nacimiento, hoy).getYears();
+        int edad = Period.between(nacimiento, hoy).getYears();
        
         return edad >= 18;
     }

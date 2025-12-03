@@ -9,13 +9,13 @@ import java.awt.event.FocusEvent;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class frmPrincipal extends javax.swing.JFrame {
 
+public class frmPrincipal extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmPrincipal.class.getName());
-    private EcosistemaController controlador;
+    private EcosistemaController ecosistemaController;
 
     public frmPrincipal() {
-        initComponents(); //Nacimiento de radios
+        initComponents(); 
         setLocationRelativeTo(null);//centramos pantalla:
         cmbEscenario.setModel(new javax.swing.DefaultComboBoxModel<>(
                 new String[]{"Equilibrado", "Depredadores dominan", "Presas dominan"}
@@ -28,7 +28,8 @@ public class frmPrincipal extends javax.swing.JFrame {
         tbpPrincipal.putClientProperty("JTabbedPane.tabAreaAlignment", "center");
         tbpPrincipal.putClientProperty("JTabbedPane.tabInsets", new java.awt.Insets(6, 20, 6, 20));
         pnlTerceraEspecie.setVisible(false);
-        // ---- Borde redondeado (ajusta el radio a tu gusto) ----
+        
+        //Borde redondeado:
         int radio = 12;
         txtCedula.setBorder(new RoundedBorder(radio));
         pwdLogin.setBorder(new RoundedBorder(radio));
@@ -39,17 +40,15 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         // ---- Placeholders ----
         setPlaceholder(txtCedula, "Cédula");
+        setPlaceholder(txtRegCedula, "Cédula");
         setPlaceholder(txtRegNombre, "Nombre completo");
         setPlaceholder(txtRegCorreo, "Correo electrónico");
-        setPlaceholder(txtRegCedula, "Cédula");
         setPlaceholderPassword(pwdLogin, "Contraseña");
         setPlaceholderPassword(pwpReg, "Contraseña");
 
-        //ocultarCamposRegistro();
         bloquearAccesoEcosistema();
 
-        //Agregar los listeners con los métods mostrarLogin
-        // y mostrarRegistro.
+        //Agregar los listeners con los métods mostrarLogin y mostrarRegistro.
         //Cursores tipo mano...
         jlNoCuenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jlTieneCuenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -68,28 +67,9 @@ public class frmPrincipal extends javax.swing.JFrame {
                 mostrarLogin();
             }
         });
-        controlador = new EcosistemaController(this);
+        ecosistemaController = new EcosistemaController(this);
     }
-
-    public void ocultarCamposRegistro() {
-        // Campos de registro
-        txtRegCedula.setVisible(false);
-        txtRegNombre.setVisible(false);     // Nombre
-        dtRegFecha.setVisible(false);
-        txtRegCorreo.setVisible(false);
-        pwpReg.setVisible(false);
-
-        // Radios
-        rdbRegHombre.setVisible(false);
-        rdbMujer.setVisible(false);
-
-        // Botón
-        btnCrearCuenta.setVisible(false);
-
-        // Labels de registro
-        jlRegistroUsuario.setVisible(false);
-        jlTieneCuenta.setVisible(false);
-    }
+    
 
     public void mostrarCamposRegistro() {
         txtRegCedula.setVisible(true);
@@ -98,8 +78,8 @@ public class frmPrincipal extends javax.swing.JFrame {
         txtRegCorreo.setVisible(true);
         pwpReg.setVisible(true);
 
-        rdbRegHombre.setVisible(true);
-        rdbMujer.setVisible(true);
+        rdbRegMasculino.setVisible(true);
+        rdbRegFemenino.setVisible(true);
 
         btnCrearCuenta.setVisible(true);
 
@@ -114,13 +94,13 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         // REGISTRO
         txtRegCedula.setText("");
-        txtRegNombre.setText("");     // Nombre
+        txtRegNombre.setText("");     
         txtRegCorreo.setText("");
         pwpReg.setText("");
         dtRegFecha.setDate(null);
 
-        rdbRegHombre.setSelected(false);
-        rdbMujer.setSelected(false);
+        rdbRegMasculino.setSelected(false);
+        rdbRegFemenino.setSelected(false);
 
     }
 
@@ -163,7 +143,7 @@ public class frmPrincipal extends javax.swing.JFrame {
                     pwd.setText("");
                     pwd.setForeground(Color.BLACK);
                     // restablece echo char para ocultar texto (valor por defecto)
-                    pwd.setEchoChar('\u2022'); // •  o usa el char que prefieras o guarda el original
+                    pwd.setEchoChar('\u2022');
                 }
             }
 
@@ -179,10 +159,22 @@ public class frmPrincipal extends javax.swing.JFrame {
         });
     }
 
+    
+    
+    
+    
+    
+    
+    
     //Bloqueos:
+    //***************************************************************
     //No permite volver al tab inicio a menos que se cierre la sesion:
     public void bloquearAccesoInicio() {
         tbpPrincipal.setEnabledAt(0, false);
+    }
+    //Desbloquear el tab de inicio al cerrar sesión:
+    public void desbloquearAccesoInicio(){
+        tbpPrincipal.setEnabledAt(0, true);
     }
 
     //No permite ingresar al tab de ecosistema, hasta que no se haya hecho el LOGIN:
@@ -198,7 +190,15 @@ public class frmPrincipal extends javax.swing.JFrame {
         });
     }
 
-    //Getters:
+    
+    
+    
+    
+    
+    
+    
+    //Getters de los componentes:
+    //***************************************************************
     // Panels principales
     public javax.swing.JTabbedPane getTbpPrincipal() {
         return tbpPrincipal;
@@ -221,6 +221,10 @@ public class frmPrincipal extends javax.swing.JFrame {
         return pwdLogin;
     }
 
+    public javax.swing.JButton getBtnCerrarSesion(){
+        return btnCerrarSesion;
+    }
+    
     public javax.swing.JButton getBtnIniciar() {
         return btnIngresar;
     }
@@ -251,12 +255,12 @@ public class frmPrincipal extends javax.swing.JFrame {
     }
 
     // RadioButtons de género
-    public javax.swing.JRadioButton getRdbHombre() {
-        return rdbRegHombre;
+    public javax.swing.JRadioButton getRdbMaculino() {
+        return rdbRegMasculino;
     }
 
-    public javax.swing.JRadioButton getRdbMujer() {
-        return rdbMujer;
+    public javax.swing.JRadioButton getRdbFemenino() {
+        return rdbRegFemenino;
     }
 
     public javax.swing.ButtonGroup getBtnGenero() {
@@ -272,7 +276,6 @@ public class frmPrincipal extends javax.swing.JFrame {
         return jlTieneCuenta;
     }
 
-    // Checkbox (NO existe → en tu diseño se usa un LABEL clickeable)
     public javax.swing.JLabel getLblCambiarARegistro() {
         return jlNoCuenta;
     }
@@ -284,6 +287,16 @@ public class frmPrincipal extends javax.swing.JFrame {
     public com.toedter.calendar.JDateChooser getDtRegFecha() {
         return dtRegFecha;
     }
+    
+    //Para cerrar Sesión:
+    public EcosistemaController getEcosistemaController(){
+        return ecosistemaController;
+    }
+    
+    
+    
+    
+    
 
     //Métodos para mostrar LOGIN y REGISTRO:
     public void mostrarLogin() {
@@ -294,6 +307,16 @@ public class frmPrincipal extends javax.swing.JFrame {
         ((java.awt.CardLayout) pnlContenedor.getLayout()).show(pnlContenedor, "card3");
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -324,8 +347,8 @@ public class frmPrincipal extends javax.swing.JFrame {
         txtRegNombre = new javax.swing.JTextField();
         dtRegFecha = new com.toedter.calendar.JDateChooser();
         txtRegCorreo = new javax.swing.JTextField();
-        rdbRegHombre = new javax.swing.JRadioButton();
-        rdbMujer = new javax.swing.JRadioButton();
+        rdbRegMasculino = new javax.swing.JRadioButton();
+        rdbRegFemenino = new javax.swing.JRadioButton();
         pwpReg = new javax.swing.JPasswordField();
         btnCrearCuenta = new javax.swing.JButton();
         jlGenero = new javax.swing.JLabel();
@@ -345,6 +368,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         rbtnEspecieMutante = new javax.swing.JRadioButton();
         rbtnEspecieAliadaPresas = new javax.swing.JRadioButton();
         rbtnEspecieAliadaDepredadores = new javax.swing.JRadioButton();
+        btnCerrarSesion = new javax.swing.JButton();
 
         jCheckBox1.setText("jCheckBox1");
 
@@ -399,6 +423,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         btnIngresar.setBackground(new java.awt.Color(0, 51, 102));
         btnIngresar.setForeground(new java.awt.Color(255, 255, 255));
         btnIngresar.setText("Ingresar");
+        btnIngresar.setOpaque(true);
         btnIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIngresarActionPerformed(evt);
@@ -448,20 +473,20 @@ public class frmPrincipal extends javax.swing.JFrame {
         });
         pnlRegistro.add(txtRegCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 300, 250, 40));
 
-        rdbRegHombre.setBackground(new java.awt.Color(255, 255, 255));
-        btnGGenero.add(rdbRegHombre);
-        rdbRegHombre.setText("Masculino");
-        rdbRegHombre.addActionListener(new java.awt.event.ActionListener() {
+        rdbRegMasculino.setBackground(new java.awt.Color(255, 255, 255));
+        btnGGenero.add(rdbRegMasculino);
+        rdbRegMasculino.setText("Masculino");
+        rdbRegMasculino.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdbRegHombreActionPerformed(evt);
+                rdbRegMasculinoActionPerformed(evt);
             }
         });
-        pnlRegistro.add(rdbRegHombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 220, -1, -1));
+        pnlRegistro.add(rdbRegMasculino, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 220, -1, -1));
 
-        rdbMujer.setBackground(new java.awt.Color(255, 255, 255));
-        btnGGenero.add(rdbMujer);
-        rdbMujer.setText("Femenino");
-        pnlRegistro.add(rdbMujer, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 220, -1, -1));
+        rdbRegFemenino.setBackground(new java.awt.Color(255, 255, 255));
+        btnGGenero.add(rdbRegFemenino);
+        rdbRegFemenino.setText("Femenino");
+        pnlRegistro.add(rdbRegFemenino, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 220, -1, -1));
         pnlRegistro.add(pwpReg, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 250, 250, 40));
 
         btnCrearCuenta.setBackground(new java.awt.Color(0, 51, 102));
@@ -579,6 +604,19 @@ public class frmPrincipal extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        btnCerrarSesion.setBackground(new java.awt.Color(0, 51, 102));
+        btnCerrarSesion.setForeground(new java.awt.Color(255, 255, 255));
+        btnCerrarSesion.setText("Cerrar Sesión");
+        btnCerrarSesion.setMaximumSize(new java.awt.Dimension(72, 23));
+        btnCerrarSesion.setMinimumSize(new java.awt.Dimension(72, 23));
+        btnCerrarSesion.setOpaque(true);
+        btnCerrarSesion.setPreferredSize(new java.awt.Dimension(72, 23));
+        btnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlEcosistemasLayout = new javax.swing.GroupLayout(pnlEcosistemas);
         pnlEcosistemas.setLayout(pnlEcosistemasLayout);
         pnlEcosistemasLayout.setHorizontalGroup(
@@ -604,15 +642,22 @@ public class frmPrincipal extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(rbtnTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 71, Short.MAX_VALUE))
+                        .addGap(0, 72, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEcosistemasLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pnlTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(64, 64, 64))))
+                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pnlTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
         );
         pnlEcosistemasLayout.setVerticalGroup(
             pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlEcosistemasLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSiguienteTurno)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEcosistemasLayout.createSequentialGroup()
                 .addComponent(cmbEscenario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGenerarEscenario)
@@ -624,12 +669,9 @@ public class frmPrincipal extends javax.swing.JFrame {
                 .addComponent(rbtnTerceraEspecie)
                 .addGap(35, 35, 35)
                 .addComponent(pnlTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlEcosistemasLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSiguienteTurno)
-                .addGap(0, 39, Short.MAX_VALUE))
+                .addGap(97, 97, 97)
+                .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55))
         );
 
         tbpPrincipal.addTab("Ecosistemas", pnlEcosistemas);
@@ -672,28 +714,28 @@ public class frmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_pwdLoginActionPerformed
 
-    private void rdbRegHombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbRegHombreActionPerformed
+    private void rdbRegMasculinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbRegMasculinoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rdbRegHombreActionPerformed
+    }//GEN-LAST:event_rdbRegMasculinoActionPerformed
 
     private void btnGenerarEscenarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarEscenarioActionPerformed
         // TODO add your handling code here
-        controlador.generarEscenarioDesdeVista(); // por ahora 10 presas, 10 depredadores
+        ecosistemaController.generarEscenarioDesdeVista(); // por ahora 10 presas, 10 depredadores
     }//GEN-LAST:event_btnGenerarEscenarioActionPerformed
 
     private void btnSiguienteTurnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteTurnoActionPerformed
         // TODO add your handling code here:
-        controlador.siguienteTurnoManual();
+        ecosistemaController.siguienteTurnoManual();
     }//GEN-LAST:event_btnSiguienteTurnoActionPerformed
 
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
         // TODO add your handling code here:
-        controlador.iniciarSimulacion();
+        ecosistemaController.iniciarSimulacion();
     }//GEN-LAST:event_btnIniciarActionPerformed
 
     private void btnPausarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPausarActionPerformed
         // TODO add your handling code here:
-        controlador.pausarSimulacion();
+        ecosistemaController.pausarSimulacion();
     }//GEN-LAST:event_btnPausarActionPerformed
 
     private void cmbEscenarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEscenarioActionPerformed
@@ -708,6 +750,10 @@ public class frmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         pnlTerceraEspecie.setVisible(rbtnTerceraEspecie.isSelected());
     }//GEN-LAST:event_rbtnTerceraEspecieActionPerformed
+
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCerrarSesionActionPerformed
     public javax.swing.JTable getTblEcosistema() {
         return tblEcosistema;
     }
@@ -736,6 +782,7 @@ public class frmPrincipal extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnCrearCuenta;
     private javax.swing.ButtonGroup btnGGenero;
     private javax.swing.JButton btnGenerarEscenario;
@@ -766,8 +813,8 @@ public class frmPrincipal extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbtnEspecieAliadaPresas;
     private javax.swing.JRadioButton rbtnEspecieMutante;
     private javax.swing.JRadioButton rbtnTerceraEspecie;
-    private javax.swing.JRadioButton rdbMujer;
-    private javax.swing.JRadioButton rdbRegHombre;
+    private javax.swing.JRadioButton rdbRegFemenino;
+    private javax.swing.JRadioButton rdbRegMasculino;
     private javax.swing.JTable tblEcosistema;
     private javax.swing.JTabbedPane tbpPrincipal;
     private javax.swing.JTextField txtCedula;

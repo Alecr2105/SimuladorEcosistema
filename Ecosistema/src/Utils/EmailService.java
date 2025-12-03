@@ -25,10 +25,9 @@ public class EmailService {
             correo.setText(mensaje);
 
             Transport.send(correo);
-            System.out.println("CORREO ENVIADO A: " + destinatario);
 
         } catch (MessagingException e) {
-            e.printStackTrace();  // 🔥 MUESTRA EL ERROR REAL
+            e.printStackTrace();  // MUESTRA EL ERROR REAL
             throw new RuntimeException("Error al enviar correo: " + e.getMessage());
         }
     }

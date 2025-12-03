@@ -24,6 +24,8 @@ public class EcosistemaController {
     private String escenarioActual = "Equilibrado";
     private int maxTurnos = 50;
 
+    
+    
     public EcosistemaController(frmPrincipal vista) {
         this.vista = vista;
         this.servicio = new EcosistemaService();
@@ -35,6 +37,9 @@ public class EcosistemaController {
 
         configurarTabla(vista.getTblEcosistema());
         configurarTimer();
+        
+        
+        
     }
 
     private void configurarTabla(JTable tabla) {
@@ -136,6 +141,9 @@ public class EcosistemaController {
         servicio.guardarEstadoTurno(0, escenarioActual);
     }
 
+    
+    
+    
     public void iniciarSimulacion() {
         if (!timer.isRunning()) {
             timer.start();

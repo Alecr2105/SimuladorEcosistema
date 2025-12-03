@@ -19,28 +19,30 @@ public class AuthController {
     public static boolean sesionIniciada = false;
 
     public AuthController(frmPrincipal view, AuthService service) {
-
         this.view = view;
         this.service = service;
 
-        // Cambiar pantallas
+        // Cambiar pantallas de incio sesión y registro:
         this.view.getLblNoCuenta().addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 view.mostrarRegistro();
             }
         });
-
         this.view.getLblTieneCuenta().addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 view.mostrarLogin();
             }
         });
 
-        // Botones
+        // Botones de autenticación:
         this.view.getBtnRegistrar().addActionListener(e -> registrarUsuario());
         this.view.getBtnIniciar().addActionListener(e -> iniciarSesion());
+        this.view.getBtnCerrarSesion().addActionListener(e -> cerrarSesion());
     }
 
+    
+    
+    
     
     // VALIDACIÓN DE REGISTRO
     private boolean validarRegistro() {
@@ -84,15 +86,12 @@ public class AuthController {
         
         //Validar la mayoría de edad:
         if(!ValidacionUtil.mayorDeEdad(fecha)){
-            JOptionPane.showMessageDialog(view, "Debe ser mayor de 18 años para registrarse.");
+            JOptionPane.showMessageDialog(view, "Personas menores de edad no pueden ingresar al sistema");
             return false;
         }
         
-        
-        
-        
         //Género:
-        if (!view.getRdbHombre().isSelected() && !view.getRdbMujer().isSelected()) {
+        if (!view.getRdbMaculino().isSelected() && !view.getRdbFemenino().isSelected()) {
             JOptionPane.showMessageDialog(view, "Seleccione un género.");
             return false;
         }
@@ -104,8 +103,9 @@ public class AuthController {
     
     
     
-    
-    //REGISTRO:
+    //Operacion de autenticación:
+    //***********************************************************************************
+    //Registrar:
     private void registrarUsuario() {
 
         if (!validarRegistro()) return;
@@ -113,7 +113,7 @@ public class AuthController {
         try {
             Date fecha = view.getDtRegFecha().getDate();
 
-            String genero = view.getRdbHombre().isSelected() ? "Hombre" : "Mujer";
+            String genero = view.getRdbMaculino().isSelected() ? "Masculino" : "Femenino";
 
             Usuario u = new Usuario(
                     Integer.parseInt(view.getTxtRegCedula().getText()),
@@ -135,7 +135,7 @@ public class AuthController {
     }
     
     
-    // LOGIN
+    //Iniciar Sesión:
     private void iniciarSesion() {
 
         String ced = view.getTxtCedula().getText();
@@ -152,7 +152,7 @@ public class AuthController {
 
             if (ok) {
                 sesionIniciada = true;
-                JOptionPane.showMessageDialog(view, "Bienvenido!");
+                JOptionPane.showMessageDialog(view, "Bienvenido a EcoSim!");
 
                 view.getTbpPrincipal().setSelectedComponent(view.getPnlEcosistemas());
                 view.bloquearAccesoInicio(); //Bloqueamos el tab de inicio
@@ -163,5 +163,36 @@ public class AuthController {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Error al iniciar sesión: " + e.getMessage());
         }
+    }
+    
+    //Cerrar Sesión:
+    private void cerrarSesion(){
+        int opcion = JOptionPane.showConfirmDialog(view,
+                "¿Desea cerrar la sesión?",
+                "Confirmar cierre de sesión",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+        
+        if(opcion != JOptionPane.YES_OPTION){
+            return; //Usuario canceló
+        }
+        
+        //Detener simulación en proceso:
+        if(view.getEcosistemaController() != null){
+            view.getEcosistemaController().pausarSimulacion();
+        }
+        
+        //Desbloquear tab de inicio:
+        view.desbloquearAccesoInicio();
+        
+        //Volver al tab de inicio:
+        view.getTbpPrincipal().setSelectedComponent(view.getPnlInicio());
+        
+        view.limpiarCampos();
+        
+        //Marcar sesion como cerrada:
+        sesionIniciada = false;
+        
+        JOptionPane.showMessageDialog(view, "Sesión finalizada exitosamente.");
     }
 }
