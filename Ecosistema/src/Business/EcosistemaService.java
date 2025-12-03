@@ -8,7 +8,7 @@ public class EcosistemaService {
     private Ecosistema ecosistema;
     private EcosistemaDAO ecosistemaDAO;
 
-    // NUEVOS servicios especializados
+    // Servicios especializados
     private MovimientoService movimientoService;
     private AlimentacionService alimentacionService;
     private ReproduccionService reproduccionService;
@@ -22,9 +22,22 @@ public class EcosistemaService {
         reproduccionService = new ReproduccionService();
     }
 
+    // ========== GENERACIÓN DE ESCENARIO ==========
+
+    // Versión sin tercera especie (compatibilidad)
     public void generarEscenario(int presas, int depredadores) {
         ecosistema.generarEscenario(presas, depredadores);
     }
+
+    // Versión con tercera especie
+    public void generarEscenario(int presas,
+                                 int depredadores,
+                                 int terceras,
+                                 String varianteTercera) {
+        ecosistema.generarEscenario(presas, depredadores, terceras, varianteTercera);
+    }
+
+    // ========== ACCESO AL MODELO ==========
 
     public int[][] getMatrizNumerica() {
         return ecosistema.getMatrizNumerica();
@@ -34,27 +47,36 @@ public class EcosistemaService {
         return ecosistema;
     }
 
-    // ---------- MOVIMIENTO (usa MovimientoService) ----------
+    // ========== MOVIMIENTO (usa MovimientoService / modelo) ==========
 
     public void moverDepredadores() {
+        // delegamos en MovimientoService
         movimientoService.moverDepredadores(ecosistema);
     }
 
     public void moverPresas() {
+        // delegamos en MovimientoService
         movimientoService.moverPresas(ecosistema);
     }
 
-    // ---------- FIN DE TURNO: hambre + reproducción ----------
+    // 👉 ESTE ES EL QUE TE FALTABA
+    public void moverTerceraEspecie() {
+        // por ahora llamamos directo al modelo
+        ecosistema.moverSoloTerceraEspecie();
+        // si quieres, luego puedes mover esto a MovimientoService
+    }
+
+    // ========== FIN DE TURNO: hambre + reproducción ==========
 
     public void aplicarFinDeTurnoBasico() {
-        // hambre, contadores, muerte y reproducción se manejan aquí
+        // hambre, contadores, muerte y reproducción
         alimentacionService.aplicarReglasAlimentacionYFinTurno(ecosistema);
 
-        // "gancho" para futura separación de reproducción, ahora es un no-op
+        // gancho para futura lógica extra de reproducción
         reproduccionService.aplicarReglasReproduccion(ecosistema);
     }
 
-    // ---------- ARCHIVOS ----------
+    // ========== ARCHIVOS ==========
 
     public void guardarDatosIniciales(int presas,
                                       int depredadores,
@@ -68,4 +90,3 @@ public class EcosistemaService {
         ecosistemaDAO.guardarEstadoTurno(ecosistema, numeroTurno, escenario);
     }
 }
-

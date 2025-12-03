@@ -27,7 +27,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         tbpPrincipal.putClientProperty("JTabbedPane.tabSeparatorsFullHeight", true);
         tbpPrincipal.putClientProperty("JTabbedPane.tabAreaAlignment", "center");
         tbpPrincipal.putClientProperty("JTabbedPane.tabInsets", new java.awt.Insets(6, 20, 6, 20));
-
+        pnlTerceraEspecie.setVisible(false);
         // ---- Borde redondeado (ajusta el radio a tu gusto) ----
         int radio = 12;
         txtCedula.setBorder(new RoundedBorder(radio));
@@ -305,6 +305,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         btnGGenero = new javax.swing.ButtonGroup();
         jCheckBox1 = new javax.swing.JCheckBox();
+        btngTerceraEspecie = new javax.swing.ButtonGroup();
         tbpPrincipal = new javax.swing.JTabbedPane();
         pnlInicio = new javax.swing.JPanel();
         pnlContenedor = new javax.swing.JPanel();
@@ -340,6 +341,10 @@ public class frmPrincipal extends javax.swing.JFrame {
         btnPausar = new javax.swing.JButton();
         cmbEscenario = new javax.swing.JComboBox<>();
         rbtnTerceraEspecie = new javax.swing.JRadioButton();
+        pnlTerceraEspecie = new javax.swing.JPanel();
+        rbtnEspecieMutante = new javax.swing.JRadioButton();
+        rbtnEspecieAliadaPresas = new javax.swing.JRadioButton();
+        rbtnEspecieAliadaDepredadores = new javax.swing.JRadioButton();
 
         jCheckBox1.setText("jCheckBox1");
 
@@ -530,6 +535,49 @@ public class frmPrincipal extends javax.swing.JFrame {
         });
 
         rbtnTerceraEspecie.setText("¿Introducir tercera especie?");
+        rbtnTerceraEspecie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbtnTerceraEspecieActionPerformed(evt);
+            }
+        });
+
+        btngTerceraEspecie.add(rbtnEspecieMutante);
+        rbtnEspecieMutante.setText("Mutante");
+
+        btngTerceraEspecie.add(rbtnEspecieAliadaPresas);
+        rbtnEspecieAliadaPresas.setText("Aliada de presas");
+        rbtnEspecieAliadaPresas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbtnEspecieAliadaPresasActionPerformed(evt);
+            }
+        });
+
+        btngTerceraEspecie.add(rbtnEspecieAliadaDepredadores);
+        rbtnEspecieAliadaDepredadores.setText("Aliada de depredadores");
+
+        javax.swing.GroupLayout pnlTerceraEspecieLayout = new javax.swing.GroupLayout(pnlTerceraEspecie);
+        pnlTerceraEspecie.setLayout(pnlTerceraEspecieLayout);
+        pnlTerceraEspecieLayout.setHorizontalGroup(
+            pnlTerceraEspecieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTerceraEspecieLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlTerceraEspecieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rbtnEspecieMutante, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rbtnEspecieAliadaPresas, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rbtnEspecieAliadaDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(77, Short.MAX_VALUE))
+        );
+        pnlTerceraEspecieLayout.setVerticalGroup(
+            pnlTerceraEspecieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTerceraEspecieLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(rbtnEspecieMutante)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(rbtnEspecieAliadaPresas)
+                .addGap(39, 39, 39)
+                .addComponent(rbtnEspecieAliadaDepredadores)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout pnlEcosistemasLayout = new javax.swing.GroupLayout(pnlEcosistemas);
         pnlEcosistemas.setLayout(pnlEcosistemasLayout);
@@ -543,20 +591,24 @@ public class frmPrincipal extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlEcosistemasLayout.createSequentialGroup()
-                        .addGap(160, 160, 160)
-                        .addComponent(btnGenerarEscenario, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlEcosistemasLayout.createSequentialGroup()
-                        .addGap(128, 128, 128)
                         .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbEscenario, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(pnlEcosistemasLayout.createSequentialGroup()
-                                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(160, 160, 160)
+                                .addComponent(btnGenerarEscenario, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlEcosistemasLayout.createSequentialGroup()
+                                .addGap(128, 128, 128)
+                                .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cmbEscenario, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(pnlEcosistemasLayout.createSequentialGroup()
+                                        .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(rbtnTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 71, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEcosistemasLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 98, Short.MAX_VALUE)
-                        .addComponent(rbtnTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(93, 93, 93))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pnlTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64))))
         );
         pnlEcosistemasLayout.setVerticalGroup(
             pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -570,6 +622,8 @@ public class frmPrincipal extends javax.swing.JFrame {
                     .addComponent(btnPausar))
                 .addGap(18, 18, 18)
                 .addComponent(rbtnTerceraEspecie)
+                .addGap(35, 35, 35)
+                .addComponent(pnlTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pnlEcosistemasLayout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -645,12 +699,36 @@ public class frmPrincipal extends javax.swing.JFrame {
     private void cmbEscenarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEscenarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbEscenarioActionPerformed
+
+    private void rbtnEspecieAliadaPresasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnEspecieAliadaPresasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbtnEspecieAliadaPresasActionPerformed
+
+    private void rbtnTerceraEspecieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnTerceraEspecieActionPerformed
+        // TODO add your handling code here:
+        pnlTerceraEspecie.setVisible(rbtnTerceraEspecie.isSelected());
+    }//GEN-LAST:event_rbtnTerceraEspecieActionPerformed
     public javax.swing.JTable getTblEcosistema() {
         return tblEcosistema;
     }
 
     public javax.swing.JComboBox<String> getCmbEscenario() {
         return cmbEscenario;
+    }
+
+    public boolean isTerceraEspecieActiva() {
+        return rbtnTerceraEspecie.isSelected();
+    }
+
+    public String getOpcionTerceraEspecie() {
+        if (rbtnEspecieMutante.isSelected()) {
+            return "Mutante";
+        } else if (rbtnEspecieAliadaPresas.isSelected()) {
+            return "AliadaPresas";
+        } else if (rbtnEspecieAliadaDepredadores.isSelected()) {
+            return "AliadaDepredadores";
+        }
+        return null; // ninguna
     }
 
     /**
@@ -665,6 +743,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnPausar;
     private javax.swing.JButton btnSiguienteTurno;
+    private javax.swing.ButtonGroup btngTerceraEspecie;
     private javax.swing.JComboBox<String> cmbEscenario;
     private com.toedter.calendar.JDateChooser dtRegFecha;
     private javax.swing.JCheckBox jCheckBox1;
@@ -680,8 +759,12 @@ public class frmPrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel pnlInicio;
     private javax.swing.JPanel pnlLogin;
     private javax.swing.JPanel pnlRegistro;
+    private javax.swing.JPanel pnlTerceraEspecie;
     private javax.swing.JPasswordField pwdLogin;
     private javax.swing.JPasswordField pwpReg;
+    private javax.swing.JRadioButton rbtnEspecieAliadaDepredadores;
+    private javax.swing.JRadioButton rbtnEspecieAliadaPresas;
+    private javax.swing.JRadioButton rbtnEspecieMutante;
     private javax.swing.JRadioButton rbtnTerceraEspecie;
     private javax.swing.JRadioButton rdbMujer;
     private javax.swing.JRadioButton rdbRegHombre;

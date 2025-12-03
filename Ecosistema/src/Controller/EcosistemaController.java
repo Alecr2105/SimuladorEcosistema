@@ -14,6 +14,7 @@ public class EcosistemaController {
     private final ImageIcon iconVacio;
     private final ImageIcon iconPresa;
     private final ImageIcon iconDepredador;
+    private final ImageIcon iconTercera;
 
     private Timer timer;
     private int turnos;
@@ -30,6 +31,7 @@ public class EcosistemaController {
         iconVacio = new ImageIcon("src/img/vacio.png");
         iconPresa = new ImageIcon("src/img/presa.png");
         iconDepredador = new ImageIcon("src/img/depredador.png");
+        iconTercera = new ImageIcon("src/img/tercera.png"); //dddd crea una imagen para esta especie
 
         configurarTabla(vista.getTblEcosistema());
         configurarTimer();
@@ -41,6 +43,7 @@ public class EcosistemaController {
             public Class<?> getColumnClass(int columnIndex) {
                 return ImageIcon.class;
             }
+
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -57,11 +60,10 @@ public class EcosistemaController {
                 faseDepredadores = false;
             } else {
                 servicio.moverPresas();
+                servicio.moverTerceraEspecie();      // 👈 NUEVO
                 servicio.aplicarFinDeTurnoBasico();
                 faseDepredadores = true;
                 turnos++;
-
-                // Guardar estado del turno
                 servicio.guardarEstadoTurno(turnos, escenarioActual);
             }
 
@@ -74,10 +76,16 @@ public class EcosistemaController {
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[i].length; j++) {
                 switch (matriz[i][j]) {
-                    case 0 -> tabla.setValueAt(iconVacio, i, j);
-                    case 1 -> tabla.setValueAt(iconPresa, i, j);
-                    case 2 -> tabla.setValueAt(iconDepredador, i, j);
+                    case 0 ->
+                        tabla.setValueAt(iconVacio, i, j);
+                    case 1 ->
+                        tabla.setValueAt(iconPresa, i, j);
+                    case 2 ->
+                        tabla.setValueAt(iconDepredador, i, j);
+                    case 3 ->
+                        tabla.setValueAt(iconTercera, i, j);
                 }
+
             }
         }
     }
@@ -89,7 +97,6 @@ public class EcosistemaController {
         int presas;
         int depredadores;
 
-        // Puedes ajustar estos números si quieres
         switch (opcion) {
             case "Depredadores dominan" -> {
                 escenarioActual = "Depredadores dominan";
@@ -101,20 +108,30 @@ public class EcosistemaController {
                 presas = 35;
                 depredadores = 5;
             }
-            default -> { // "Equilibrado"
+            default -> {
                 escenarioActual = "Equilibrado";
                 presas = 20;
                 depredadores = 20;
             }
         }
 
+        // NUEVO: tercera especie
+        int terceras = 0;
+        String varianteTercera = null;
+
+        if (vista.isTerceraEspecieActiva()) {
+            varianteTercera = vista.getOpcionTerceraEspecie();
+            // Puedes ajustar cuántos individuos iniciales de tercera especie
+            terceras = 10;
+        }
+
         turnos = 0;
         faseDepredadores = true;
 
-        servicio.generarEscenario(presas, depredadores);
+        // ahora usamos el método nuevo del service
+        servicio.generarEscenario(presas, depredadores, terceras, varianteTercera);
         actualizarTabla(vista.getTblEcosistema());
 
-        // Guardar datos iniciales y turno 0
         servicio.guardarDatosIniciales(presas, depredadores, maxTurnos, escenarioActual);
         servicio.guardarEstadoTurno(0, escenarioActual);
     }
@@ -136,6 +153,7 @@ public class EcosistemaController {
         actualizarTabla(vista.getTblEcosistema());
 
         servicio.moverPresas();
+        servicio.moverTerceraEspecie();   // 👈 NUEVO
         servicio.aplicarFinDeTurnoBasico();
         actualizarTabla(vista.getTblEcosistema());
 
@@ -147,4 +165,3 @@ public class EcosistemaController {
         return turnos;
     }
 }
-
