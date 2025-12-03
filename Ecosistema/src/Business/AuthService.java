@@ -1,0 +1,108 @@
+package Business;
+
+/*Clase encargada de la autenticación y el registro
+Encripta la contraseña para su respectivo almacenamiento en usuarios.txt
+comparar login contra el archivo
+registrar usuario usando UsuarioDAO
+*/
+
+import Data.UsuarioDAO;
+import Model.Usuario;
+import Utils.EmailService;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import javax.swing.JOptionPane;
+
+public class AuthService {
+    private final UsuarioDAO userDAO = new UsuarioDAO();
+    private final EmailService emailService = new EmailService();
+
+    
+    
+    
+    
+    //LOGIN: Validate ID and encrypted password: 
+    public boolean iniciarSesion(int cedula, String contrasena){
+        //Buscar usuario:
+        Usuario found = userDAO.buscarPorCedula(cedula);
+        if(found == null){
+            JOptionPane.showMessageDialog(null, "El usuario con la cédula " + cedula +
+            " no existe en el sistema", "Error",JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        //Encriptar la contraseña ingresada:
+        String contrasenaEncrip = encriptar(contrasena);
+        
+        //Comparar hash guardado vs hash recién generado:
+        if(found.getContrasena().equals(contrasenaEncrip)){
+            enviarCorreoInicioSesion(found);
+            return true;
+        }else{
+            return false; 
+        }
+   }
+    
+    
+    
+    
+    public boolean registrarUsuario(Usuario nuevo){
+        //Check if a user with this Id number exists:
+        Usuario exists = userDAO.buscarPorCedula(nuevo.getCedula());
+        if(exists != null){
+            JOptionPane.showMessageDialog(null, "Usuario ya existente con ese número de cédula",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return false; //User exist
+        }
+        //Encrypts password before saving.
+        String passEnc = encriptar(nuevo.getContrasena());
+        nuevo.setContrasena(passEnc);
+        
+        //Saving in the file:
+        userDAO.guardarUsuario(nuevo);
+        JOptionPane.showMessageDialog(null, "Usuario registrado correctamente.");
+        enviarCorreoRegistro(nuevo);
+        return true;
+    }
+    
+    private void enviarCorreoRegistro(Usuario usuario) {
+        try {
+            String asunto = "Cuenta creada en Ecosistemas";
+            String mensaje = "Su cuenta se ha creado correctamente.";
+            emailService.enviarCorreo(usuario.getCorreo(), asunto, mensaje);
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de registro: " + e.getMessage());
+        }
+    }
+
+    private void enviarCorreoInicioSesion(Usuario usuario) {
+        try {
+            String asunto = "Inicio de sesión en Ecosistemas";
+            String mensaje = "Se ha iniciado sesión en su cuenta de ecosistemas.";
+            emailService.enviarCorreo(usuario.getCorreo(), asunto, mensaje);
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de inicio de sesión: " + e.getMessage());
+        }
+    }
+    
+    
+    
+    
+    
+    
+    //Encrypt the entered password(SHA-256):
+    //**************************************
+    public String encriptar(String contr){
+        try{
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(contr.getBytes());
+            
+            StringBuilder sb = new StringBuilder();
+            for(byte b : hash){
+                sb.append(String.format("%02x", b));
+            }
+            return  sb.toString();//Send to file users.txt
+        }catch(NoSuchAlgorithmException ex){
+            throw  new RuntimeException("Error al encriptar la contraseña ingresada: " + ex.getMessage());
+        }
+    }
+}
