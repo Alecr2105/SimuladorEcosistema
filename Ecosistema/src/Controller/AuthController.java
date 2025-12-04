@@ -145,6 +145,13 @@ public class AuthController {
             JOptionPane.showMessageDialog(view, "Debe ingresar cédula y contraseña.");
             return;
         }
+        
+        //Validar que la cédula solo tenga números:
+        if(!ced.matches("\\d+")){
+            JOptionPane.showMessageDialog(view, "La cédula solo puede contener números. ");
+            return; //Detenemos el proceso de login
+        }
+        
 
         try {
 
