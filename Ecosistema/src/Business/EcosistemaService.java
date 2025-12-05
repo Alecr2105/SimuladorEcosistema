@@ -100,4 +100,8 @@ public class EcosistemaService {
         return ecosistema.contarTerceraEspecie();
     }
 
+    public java.util.List<String> consumirEventosTurno() {
+        return ecosistema.consumirEventosTurno();
+    }
+
 }

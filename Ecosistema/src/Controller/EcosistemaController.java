@@ -32,7 +32,7 @@ public class EcosistemaController {
     private boolean faseDepredadores = true;
 
     private String escenarioActual = "Equilibrado";
-    private int maxTurnos = 50;
+    private int maxTurnos = 15;
 
     private boolean mutacionesActivas = false;
     private String tipoMutacionActual = null;
@@ -86,6 +86,9 @@ public class EcosistemaController {
                 turnos++; // turno completo (depredadores + presas + tercera)
 
                 actualizarTabla(vista.getTblEcosistema());
+                for (String ev : servicio.consumirEventosTurno()) {
+                    log(ev);
+                }
 
                 int presas = servicio.getTotalPresas();
                 int depredadores = servicio.getTotalDepredadores();
@@ -134,10 +137,27 @@ public class EcosistemaController {
 
                 Animal a = celdas[i][j].getAnimal();
 
-                if (a instanceof Presa) {
-                    tabla.setValueAt(iconPresa, i, j);
-                } else if (a instanceof Depredador) {
-                    tabla.setValueAt(iconDepredador, i, j);
+                // 🟢 PRESA (normal o venenosa)
+                if (a instanceof Presa p) {
+                    if (p.isVenenosa()
+                            && iconPresaVenenosa != null
+                            && iconPresaVenenosa.getIconWidth() > 0) {
+                        tabla.setValueAt(iconPresaVenenosa, i, j);
+                    } else {
+                        tabla.setValueAt(iconPresa, i, j);
+                    }
+
+                    // 🔴 DEPREDADOR (normal o furioso)
+                } else if (a instanceof Depredador d) {
+                    if (d.isFurioso()
+                            && iconDepredadorFurioso != null
+                            && iconDepredadorFurioso.getIconWidth() > 0) {
+                        tabla.setValueAt(iconDepredadorFurioso, i, j);
+                    } else {
+                        tabla.setValueAt(iconDepredador, i, j);
+                    }
+
+                    // 🟣 TERCERA ESPECIE (mutante / aliada presas / aliada depredadores)
                 } else if (a instanceof TerceraEspecie te) {
                     switch (te.getVariante()) {
                         case "Mutante" ->
@@ -149,6 +169,7 @@ public class EcosistemaController {
                         default ->
                             tabla.setValueAt(iconMutante, i, j); // fallback
                     }
+
                 } else {
                     // por si en el futuro aparece otro tipo
                     tabla.setValueAt(iconVacio, i, j);

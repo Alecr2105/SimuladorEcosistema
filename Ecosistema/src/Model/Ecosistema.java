@@ -9,6 +9,7 @@ public class Ecosistema {
     private final int TAM = 10;
     private final Celda[][] matriz;
     private final Random random = new Random();
+    private final List<String> eventosTurno = new ArrayList<>();
 
     public Ecosistema() {
         matriz = new Celda[TAM][TAM];
@@ -298,39 +299,31 @@ public class Ecosistema {
 
             Animal objetivo = matriz[nf][nc].getAnimal();
 
-            if (objetivo instanceof Presa presa && presa.isVenenosa()) {
-                // presa venenosa: mueren ambos
+            // 💀 CASO 1: presa venenosa → mueren ambos
+            if (objetivo instanceof Presa p && p.isVenenosa()) {
+
+                // log interno (luego lo sacamos al JTextArea)
+                eventosTurno.add("Depredador murió al comer una presa venenosa en (" + nf + "," + nc + ").");
+
                 matriz[fila][col].setAnimal(null); // muere depredador
-                matriz[nf][nc].setAnimal(null);    // desaparece la presa venenosa
-                return;
-            } else {
-                // comportamiento normal
-                matriz[nf][nc].setAnimal(depredador);
-                matriz[fila][col].setAnimal(null);
-
-                depredador.setFila(nf);
-                depredador.setColumna(nc);
-
-                depredador.reiniciarHambre();
+                matriz[nf][nc].setAnimal(null);    // desaparece la presa
                 return;
             }
-        }
 
-        // 2) Si no hay presas, busca una celda vacía
-        List<int[]> libres = obtenerCeldasLibresAdyacentes(fila, col);
-
-        if (!libres.isEmpty()) {
-            int[] destino = libres.get(random.nextInt(libres.size()));
-            int nf = destino[0];
-            int nc = destino[1];
-
+            // 🥩 CASO 2: presa normal → comportamiento normal
             matriz[nf][nc].setAnimal(depredador);
             matriz[fila][col].setAnimal(null);
 
             depredador.setFila(nf);
             depredador.setColumna(nc);
+
+            depredador.reiniciarHambre();
+
+            eventosTurno.add("Depredador comió una presa en (" + nf + "," + nc + ").");
+            return;
         }
-        // Si no hay nada, se queda donde está
+        // 2) Si no hay presas, buscar celda libre (igual que ya lo tenías)
+
     }
 
     private List<int[]> obtenerCeldasLibresAdyacentes(int fila, int col) {
@@ -526,6 +519,12 @@ public class Ecosistema {
             }
         }
         return cont;
+    }
+
+    public List<String> consumirEventosTurno() {
+        List<String> copia = new ArrayList<>(eventosTurno);
+        eventosTurno.clear();
+        return copia;
     }
 
 }
