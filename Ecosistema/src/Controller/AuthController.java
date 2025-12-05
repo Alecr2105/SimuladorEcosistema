@@ -17,6 +17,7 @@ public class AuthController {
     private AuthService service;
 
     public static boolean sesionIniciada = false;
+    public static Usuario usuarioActual = null;
 
     public AuthController(frmPrincipal view, AuthService service) {
         this.view = view;
@@ -158,6 +159,7 @@ public class AuthController {
             boolean ok = service.iniciarSesion(Integer.parseInt(ced), pwd);
 
             if (ok) {
+                usuarioActual = service.buscarPorCedula(Integer.parseInt(ced));
                 sesionIniciada = true;
                 JOptionPane.showMessageDialog(view, "Bienvenido a EcoSim!");
 
@@ -199,6 +201,7 @@ public class AuthController {
         
         //Marcar sesion como cerrada:
         sesionIniciada = false;
+        usuarioActual = null;
         
         JOptionPane.showMessageDialog(view, "Sesión finalizada exitosamente.");
     }

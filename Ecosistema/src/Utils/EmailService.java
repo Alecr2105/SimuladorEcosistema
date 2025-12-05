@@ -9,6 +9,11 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.Multipart;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
+import java.io.File;
+import java.io.IOException;
 
 public class EmailService {
     private static final String REMITENTE = "ecosistemas29@gmail.com";
@@ -46,5 +51,35 @@ public class EmailService {
                 return new PasswordAuthentication(REMITENTE, CONTRASENA_APLICACION);
             }
         });
+    }
+    
+    public void enviarCorreoConAdjunto(String destinatario,
+                                       String asunto,
+                                       String mensaje,
+                                       String rutaAdjunto) {
+        try {
+            Session session = crearSesion();
+
+            Message correo = new MimeMessage(session);
+            correo.setFrom(new InternetAddress(REMITENTE));
+            correo.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+            correo.setSubject(asunto);
+
+            MimeBodyPart cuerpo = new MimeBodyPart();
+            cuerpo.setText(mensaje);
+
+            MimeBodyPart adjunto = new MimeBodyPart();
+            adjunto.attachFile(new File(rutaAdjunto));
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(cuerpo);
+            multipart.addBodyPart(adjunto);
+
+            correo.setContent(multipart);
+
+            Transport.send(correo);
+        } catch (MessagingException | IOException e) {
+            throw new RuntimeException("Error al enviar correo con adjunto: " + e.getMessage(), e);
+        }
     }
 }

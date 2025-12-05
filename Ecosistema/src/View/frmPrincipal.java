@@ -1,18 +1,27 @@
 package View;
-
-import javax.swing.JOptionPane;
+import Business.ReporteService;
 import Controller.AuthController;
 import Controller.EcosistemaController;
+import Model.ReporteDatos;
+import Utils.EmailService;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 
 public class frmPrincipal extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmPrincipal.class.getName());
     private EcosistemaController ecosistemaController;
+    private final ReporteService reporteService = new ReporteService();
+    private final EmailService emailService = new EmailService();
 
     public frmPrincipal() {
         initComponents();
@@ -32,6 +41,11 @@ public class frmPrincipal extends javax.swing.JFrame {
         tbpPrincipal.putClientProperty("JTabbedPane.tabAreaAlignment", "center");
         tbpPrincipal.putClientProperty("JTabbedPane.tabInsets", new java.awt.Insets(6, 20, 6, 20));
         pnlTerceraEspecie.setVisible(false);
+        
+        pnlGraficoPresasDepredadores.setLayout(new BorderLayout());
+        pnlGraficoOcupacion.setLayout(new BorderLayout());
+        lblPrimeraExtincion.setText("Extinción de presas:");
+        lblSegundaExtincion.setText("Extinción de depredadores:");
 
         //Borde redondeado:
         int radio = 12;
@@ -294,6 +308,22 @@ public class frmPrincipal extends javax.swing.JFrame {
     
     public void mostrarReporte() {
         tbpPrincipal.setSelectedComponent(pnlReporte);
+        try {
+            ReporteDatos datos = reporteService.cargarDatosDesdeArchivo();
+
+            spnCantidadTurnos.setModel(new javax.swing.SpinnerNumberModel(datos.getTotalTurnos(), 0, 1000, 1));
+            spnCantidadTurnos.setEnabled(false);
+            txtExtincion1.setText(datos.getTurnoExtincionPresas() == null ? "N/A" : datos.getTurnoExtincionPresas().toString());
+            txtExtincion2.setText(datos.getTurnoExtincionDepredadores() == null ? "N/A" : datos.getTurnoExtincionDepredadores().toString());
+
+            dibujarGraficoPresasDepredadores(datos);
+            dibujarGraficoOcupacion(datos);
+
+            String rutaPdf = reporteService.generarPdf(datos, "reporte_simulacion.pdf");
+            enviarPdfPorCorreo(rutaPdf);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "No se pudo generar el reporte: " + e.getMessage());
+        }
     }
 
     /**
@@ -706,7 +736,7 @@ public class frmPrincipal extends javax.swing.JFrame {
             }
         });
 
-        lblSegundaExtincion.setText("Primera especie extinta:");
+        lblSegundaExtincion.setText("Segunda especie extinta:");
 
         javax.swing.GroupLayout pnlGraficoOcupacionLayout = new javax.swing.GroupLayout(pnlGraficoOcupacion);
         pnlGraficoOcupacion.setLayout(pnlGraficoOcupacionLayout);
@@ -916,6 +946,55 @@ public class frmPrincipal extends javax.swing.JFrame {
             return "VENENO";
         }
         return null;
+    }
+    
+    private void dibujarGraficoPresasDepredadores(ReporteDatos datos) {
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        dataset.setValue("Presas", datos.getPresasFinales());
+        dataset.setValue("Depredadores", datos.getDepredadoresFinales());
+
+        JFreeChart chart = ChartFactory.createPieChart("", dataset, true, true, false);
+        ChartPanel panel = new ChartPanel(chart);
+
+        pnlGraficoPresasDepredadores.removeAll();
+        pnlGraficoPresasDepredadores.add(panel, BorderLayout.CENTER);
+        pnlGraficoPresasDepredadores.revalidate();
+        pnlGraficoPresasDepredadores.repaint();
+    }
+
+    private void dibujarGraficoOcupacion(ReporteDatos datos) {
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        int libres = datos.getTotalCeldas() - datos.getCeldasOcupadas();
+        dataset.setValue("Ocupado", datos.getCeldasOcupadas());
+        dataset.setValue("Libre", libres);
+
+        JFreeChart chart = ChartFactory.createPieChart("", dataset, true, true, false);
+        ChartPanel panel = new ChartPanel(chart);
+
+        pnlGraficoOcupacion.removeAll();
+        pnlGraficoOcupacion.add(panel, BorderLayout.CENTER);
+        pnlGraficoOcupacion.revalidate();
+        pnlGraficoOcupacion.repaint();
+    }
+
+    private void enviarPdfPorCorreo(String rutaPdf) {
+        if (AuthController.usuarioActual == null) {
+            return;
+        }
+
+        String destinatario = AuthController.usuarioActual.getCorreo();
+        if (destinatario == null || destinatario.isBlank()) {
+            return;
+        }
+
+        try {
+            emailService.enviarCorreoConAdjunto(destinatario,
+                    "Reporte de simulación",
+                    "Se adjunta el reporte de la simulación ejecutada.",
+                    rutaPdf);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "No se pudo enviar el reporte por correo: " + ex.getMessage());
+        }
     }
 
     /**

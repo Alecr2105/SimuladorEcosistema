@@ -64,7 +64,9 @@ public class AuthService {
         return true;
     }
     
-    
+    public Usuario buscarPorCedula(int cedula) {
+        return userDAO.buscarPorCedula(cedula);
+    }
     
     
     
