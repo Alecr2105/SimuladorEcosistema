@@ -5,6 +5,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,10 +21,17 @@ public class ReporteService {
     }
 
     public ReporteDatos cargarDatosDesdeArchivo(String ruta) throws IOException {
+        File archivo = new File(ruta);
+        if (!archivo.exists()) {
+            throw new IOException("No se encontró el archivo de estados: " + ruta);
+        }
+        
+        
         ReporteDatos ultimoReporte = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
         ReporteDatos reporteActual = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
+        boolean seLeyeronTurnos = false;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(ruta))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
             Integer turnoEnProceso = null;
             List<String> filas = new ArrayList<>();
@@ -32,6 +40,7 @@ public class ReporteService {
                 if (linea.startsWith("---TURNO=")) {
                     if (turnoEnProceso != null && !filas.isEmpty()) {
                         procesarTurno(turnoEnProceso, filas, reporteActual);
+                        seLeyeronTurnos = true;
                     }
 
                     turnoEnProceso = parsearTurno(linea);
@@ -44,6 +53,7 @@ public class ReporteService {
                 } else if (linea.trim().isEmpty()) {
                     if (turnoEnProceso != null && !filas.isEmpty()) {
                         procesarTurno(turnoEnProceso, filas, reporteActual);
+                        seLeyeronTurnos = true;
                         turnoEnProceso = null;
                         filas = new ArrayList<>();
                     }
@@ -54,10 +64,15 @@ public class ReporteService {
 
             if (turnoEnProceso != null && !filas.isEmpty()) {
                 procesarTurno(turnoEnProceso, filas, reporteActual);
+                seLeyeronTurnos = true;
             }
 
             ultimoReporte = reporteActual;
         }
+        if (!seLeyeronTurnos) {
+            throw new IOException("El archivo de estados no contiene turnos de simulación.");
+        }
+
 
         return ultimoReporte;
     }
