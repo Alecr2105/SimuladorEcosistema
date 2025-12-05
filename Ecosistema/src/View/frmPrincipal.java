@@ -291,6 +291,10 @@ public class frmPrincipal extends javax.swing.JFrame {
     public void mostrarRegistro() {
         ((java.awt.CardLayout) pnlContenedor.getLayout()).show(pnlContenedor, "card3");
     }
+    
+    public void mostrarReporte() {
+        tbpPrincipal.setSelectedComponent(pnlReporte);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -348,6 +352,17 @@ public class frmPrincipal extends javax.swing.JFrame {
         txtMovimientos = new javax.swing.JTextArea();
         cmbMutacion = new javax.swing.JComboBox<>();
         chkMutacionesGeneticas = new javax.swing.JCheckBox();
+        pnlReporte = new javax.swing.JPanel();
+        lblTurnos = new javax.swing.JLabel();
+        spnCantidadTurnos = new javax.swing.JSpinner();
+        pnlGraficoPresasDepredadores = new javax.swing.JPanel();
+        lblGraficoPresasDepredadores = new javax.swing.JLabel();
+        lblPrimeraExtincion = new javax.swing.JLabel();
+        txtExtincion1 = new javax.swing.JTextField();
+        lblSegundaExtincion = new javax.swing.JLabel();
+        txtExtincion2 = new javax.swing.JTextField();
+        pnlGraficoOcupacion = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         jCheckBox1.setText("jCheckBox1");
 
@@ -668,6 +683,111 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         tbpPrincipal.addTab("Ecosistemas", pnlEcosistemas);
 
+        lblTurnos.setText("Cantidad de turnos ejecutados:");
+
+        javax.swing.GroupLayout pnlGraficoPresasDepredadoresLayout = new javax.swing.GroupLayout(pnlGraficoPresasDepredadores);
+        pnlGraficoPresasDepredadores.setLayout(pnlGraficoPresasDepredadoresLayout);
+        pnlGraficoPresasDepredadoresLayout.setHorizontalGroup(
+            pnlGraficoPresasDepredadoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 382, Short.MAX_VALUE)
+        );
+        pnlGraficoPresasDepredadoresLayout.setVerticalGroup(
+            pnlGraficoPresasDepredadoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 220, Short.MAX_VALUE)
+        );
+
+        lblGraficoPresasDepredadores.setText("Gráfico De Presas y Depredadores");
+
+        lblPrimeraExtincion.setText("Primera especie extinta:");
+
+        txtExtincion1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtExtincion1ActionPerformed(evt);
+            }
+        });
+
+        lblSegundaExtincion.setText("Primera especie extinta:");
+
+        javax.swing.GroupLayout pnlGraficoOcupacionLayout = new javax.swing.GroupLayout(pnlGraficoOcupacion);
+        pnlGraficoOcupacion.setLayout(pnlGraficoOcupacionLayout);
+        pnlGraficoOcupacionLayout.setHorizontalGroup(
+            pnlGraficoOcupacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 382, Short.MAX_VALUE)
+        );
+        pnlGraficoOcupacionLayout.setVerticalGroup(
+            pnlGraficoOcupacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 220, Short.MAX_VALUE)
+        );
+
+        jLabel2.setText("Gráfico de ocupación del ecosistema");
+
+        javax.swing.GroupLayout pnlReporteLayout = new javax.swing.GroupLayout(pnlReporte);
+        pnlReporte.setLayout(pnlReporteLayout);
+        pnlReporteLayout.setHorizontalGroup(
+            pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlReporteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlReporteLayout.createSequentialGroup()
+                        .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlReporteLayout.createSequentialGroup()
+                                .addComponent(lblTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(spnCantidadTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlReporteLayout.createSequentialGroup()
+                                .addComponent(lblPrimeraExtincion, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExtincion1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlReporteLayout.createSequentialGroup()
+                                .addComponent(lblSegundaExtincion, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExtincion2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
+                        .addGap(0, 612, Short.MAX_VALUE)
+                        .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pnlGraficoOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
+                                    .addComponent(lblGraficoPresasDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(154, 154, 154))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
+                                    .addComponent(pnlGraficoPresasDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(57, 57, 57)))))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(132, 132, 132))
+        );
+        pnlReporteLayout.setVerticalGroup(
+            pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlReporteLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(lblGraficoPresasDepredadores)
+                .addGap(18, 18, 18)
+                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlGraficoPresasDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlReporteLayout.createSequentialGroup()
+                        .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(spnCantidadTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
+                        .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblPrimeraExtincion)
+                            .addComponent(txtExtincion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblSegundaExtincion)
+                            .addComponent(txtExtincion2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(pnlGraficoOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51))
+        );
+
+        tbpPrincipal.addTab("Reporte", pnlReporte);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -746,6 +866,10 @@ public class frmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         cmbMutacion.setEnabled(chkMutacionesGeneticas.isSelected());
     }//GEN-LAST:event_chkMutacionesGeneticasActionPerformed
+
+    private void txtExtincion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtExtincion1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtExtincion1ActionPerformed
     public javax.swing.JTable getTblEcosistema() {
         return tblEcosistema;
     }
@@ -813,6 +937,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser dtRegFecha;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel jlGenero;
@@ -821,11 +946,18 @@ public class frmPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jlNoCuenta;
     private javax.swing.JLabel jlRegistroUsuario;
     private javax.swing.JLabel jlTieneCuenta;
+    private javax.swing.JLabel lblGraficoPresasDepredadores;
+    private javax.swing.JLabel lblPrimeraExtincion;
+    private javax.swing.JLabel lblSegundaExtincion;
+    private javax.swing.JLabel lblTurnos;
     private javax.swing.JPanel pnlContenedor;
     private javax.swing.JPanel pnlEcosistemas;
+    private javax.swing.JPanel pnlGraficoOcupacion;
+    private javax.swing.JPanel pnlGraficoPresasDepredadores;
     private javax.swing.JPanel pnlInicio;
     private javax.swing.JPanel pnlLogin;
     private javax.swing.JPanel pnlRegistro;
+    private javax.swing.JPanel pnlReporte;
     private javax.swing.JPanel pnlTerceraEspecie;
     private javax.swing.JPasswordField pwdLogin;
     private javax.swing.JPasswordField pwpReg;
@@ -835,9 +967,12 @@ public class frmPrincipal extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbtnTerceraEspecie;
     private javax.swing.JRadioButton rdbRegFemenino;
     private javax.swing.JRadioButton rdbRegMasculino;
+    private javax.swing.JSpinner spnCantidadTurnos;
     private javax.swing.JTable tblEcosistema;
     private javax.swing.JTabbedPane tbpPrincipal;
     private javax.swing.JTextField txtCedula;
+    private javax.swing.JTextField txtExtincion1;
+    private javax.swing.JTextField txtExtincion2;
     private javax.swing.JTextArea txtMovimientos;
     private javax.swing.JTextField txtRegCedula;
     private javax.swing.JTextField txtRegCorreo;

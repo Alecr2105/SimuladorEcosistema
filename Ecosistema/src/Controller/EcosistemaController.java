@@ -103,8 +103,8 @@ public class EcosistemaController {
 
                 // Verificar máximo de turnos
                 if (turnos >= maxTurnos) {
-                    timer.stop();
                     log("Simulación detenida: se alcanzó el máximo de turnos (" + maxTurnos + ").");
+                    finalizarSimulacion();
                 }
 
                 // Opcional: log de extinciones
@@ -116,7 +116,7 @@ public class EcosistemaController {
                 }
                 if (presas == 0 && depredadores == 0 && terceras == 0) {
                     log(">> Todas las especies se extinguieron. Fin de la simulación.");
-                    timer.stop();
+                    finalizarSimulacion();
                 }
 
                 faseDepredadores = true;
@@ -272,6 +272,13 @@ public class EcosistemaController {
 
     private void log(String mensaje) {
         vista.getTxtMovimientos().append(mensaje + "\n");
+    }
+    
+    private void finalizarSimulacion() {
+        if (timer.isRunning()) {
+            timer.stop();
+        }
+        vista.mostrarReporte();
     }
 
 }
