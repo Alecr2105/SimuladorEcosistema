@@ -1,4 +1,5 @@
 package View;
+
 import Business.ReporteService;
 import Controller.AuthController;
 import Controller.EcosistemaController;
@@ -41,7 +42,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         tbpPrincipal.putClientProperty("JTabbedPane.tabAreaAlignment", "center");
         tbpPrincipal.putClientProperty("JTabbedPane.tabInsets", new java.awt.Insets(6, 20, 6, 20));
         pnlTerceraEspecie.setVisible(false);
-        
+
         pnlGraficoPresasDepredadores.setLayout(new BorderLayout());
         pnlGraficoOcupacion.setLayout(new BorderLayout());
         lblPrimeraExtincion.setText("Extinción de presas:");
@@ -305,24 +306,50 @@ public class frmPrincipal extends javax.swing.JFrame {
     public void mostrarRegistro() {
         ((java.awt.CardLayout) pnlContenedor.getLayout()).show(pnlContenedor, "card3");
     }
-    
+
     public void mostrarReporte() {
         tbpPrincipal.setSelectedComponent(pnlReporte);
+
+        // 1) Cargar datos del archivo (nunca será null gracias a ReporteService)
+        ReporteDatos datos = null;
         try {
-            ReporteDatos datos = reporteService.cargarDatosDesdeArchivo();
+            datos = reporteService.cargarDatosDesdeArchivo();
+        } catch (Exception e) {
+            // Con la nueva versión de ReporteService esto casi nunca pasará,
+            // pero por seguridad mostramos un mensaje y usamos un reporte vacío.
+            JOptionPane.showMessageDialog(this,
+                    "No se pudieron cargar los datos del archivo de estados.\n"
+                    + "Se mostrará un reporte vacío.\nDetalle: " + e.getMessage(),
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+            datos = new ReporteDatos(10 * 10); // 10x10
+        }
 
-            spnCantidadTurnos.setModel(new javax.swing.SpinnerNumberModel(datos.getTotalTurnos(), 0, 1000, 1));
-            spnCantidadTurnos.setEnabled(false);
-            txtExtincion1.setText(datos.getTurnoExtincionPresas() == null ? "N/A" : datos.getTurnoExtincionPresas().toString());
-            txtExtincion2.setText(datos.getTurnoExtincionDepredadores() == null ? "N/A" : datos.getTurnoExtincionDepredadores().toString());
+        // 2) Siempre llenar la UI con lo que tengamos en 'datos'
+        spnCantidadTurnos.setModel(new javax.swing.SpinnerNumberModel(datos.getTotalTurnos(), 0, 1000, 1));
+        spnCantidadTurnos.setEnabled(false);
 
-            dibujarGraficoPresasDepredadores(datos);
-            dibujarGraficoOcupacion(datos);
+        txtExtincion1.setText(datos.getTurnoExtincionPresas() == null
+                ? "N/A"
+                : datos.getTurnoExtincionPresas().toString());
 
+        txtExtincion2.setText(datos.getTurnoExtincionDepredadores() == null
+                ? "N/A"
+                : datos.getTurnoExtincionDepredadores().toString());
+
+        // Dibujar gráficos
+        dibujarGraficoPresasDepredadores(datos);
+        dibujarGraficoOcupacion(datos);
+
+        // 3) Intentar generar PDF y enviarlo por correo
+        try {
             String rutaPdf = reporteService.generarPdf(datos, "reporte_simulacion.pdf");
             enviarPdfPorCorreo(rutaPdf);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "No se pudo generar el reporte: " + e.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo generar o enviar el reporte PDF.\nDetalle: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -947,10 +974,10 @@ public class frmPrincipal extends javax.swing.JFrame {
         }
         return null;
     }
-    
+
     private void dibujarGraficoPresasDepredadores(ReporteDatos datos) {
         DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Presas", datos.getPresasFinales());
+        dataset.setValue("Presas", datos.getPresasFinales());//esta linea me la marca con error
         dataset.setValue("Depredadores", datos.getDepredadoresFinales());
 
         JFreeChart chart = ChartFactory.createPieChart("", dataset, true, true, false);

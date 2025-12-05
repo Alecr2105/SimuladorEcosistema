@@ -19,6 +19,8 @@ public class EcosistemaDAO {
                                       int cantDepredadores,
                                       int maxTurnos,
                                       String escenario) {
+        
+        reiniciarArchivoEstados();
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_INICIAL, false))) {
 
@@ -45,6 +47,20 @@ public class EcosistemaDAO {
 
         } catch (IOException e) {
             System.out.println("Error al guardar ecosistema.txt: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * El archivo de estados se usa para que el módulo de reportes lea el último
+     * ciclo de simulación. Antes de iniciar una nueva corrida lo truncamos para
+     * evitar que queden turnos viejos mezclados con los actuales y que el
+     * parser del reporte encuentre datos corruptos.
+     */
+    private void reiniciarArchivoEstados() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_ESTADOS, false))) {
+            // El try-with-resources crea/trunca el archivo, no necesitamos escribir nada.
+        } catch (IOException e) {
+            System.out.println("No se pudo reiniciar estado_turnos.txt: " + e.getMessage());
         }
     }
 

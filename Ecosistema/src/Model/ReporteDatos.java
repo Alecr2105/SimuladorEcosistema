@@ -5,10 +5,10 @@ public class ReporteDatos {
     private int presasFinales;
     private int depredadoresFinales;
     private int terceraEspecieFinal;
+    private int celdasOcupadas;
     private Integer turnoExtincionPresas;
     private Integer turnoExtincionDepredadores;
-    private int celdasOcupadas;
-    private final int totalCeldas;
+    private int totalCeldas;
 
     public ReporteDatos(int totalCeldas) {
         this.totalCeldas = totalCeldas;
@@ -46,6 +46,14 @@ public class ReporteDatos {
         this.terceraEspecieFinal = terceraEspecieFinal;
     }
 
+    public int getCeldasOcupadas() {
+        return celdasOcupadas;
+    }
+
+    public void setCeldasOcupadas(int celdasOcupadas) {
+        this.celdasOcupadas = celdasOcupadas;
+    }
+
     public Integer getTurnoExtincionPresas() {
         return turnoExtincionPresas;
     }
@@ -62,23 +70,16 @@ public class ReporteDatos {
         this.turnoExtincionDepredadores = turnoExtincionDepredadores;
     }
 
-    public int getCeldasOcupadas() {
-        return celdasOcupadas;
-    }
-
-    public void setCeldasOcupadas(int celdasOcupadas) {
-        this.celdasOcupadas = celdasOcupadas;
-    }
-
     public int getTotalCeldas() {
         return totalCeldas;
     }
 
+    public void setTotalCeldas(int totalCeldas) {
+        this.totalCeldas = totalCeldas;
+    }
+
     public double getPorcentajeOcupacion() {
-        if (totalCeldas == 0) {
-            return 0;
-        }
-        return (celdasOcupadas * 100.0) / totalCeldas;
+        return totalCeldas == 0 ? 0 : (celdasOcupadas * 100.0 / totalCeldas);
     }
     
 }
