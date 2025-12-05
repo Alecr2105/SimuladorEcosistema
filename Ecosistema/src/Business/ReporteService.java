@@ -77,16 +77,29 @@ public class ReporteService {
         return ultimoReporte;
     }
 
-    private void procesarTurno(int turno, List<String> filas, ReporteDatos reporte) {
+    private void procesarTurno(int turno, List<String> filas, ReporteDatos reporte)throws IOException {
+        if (filas.size() != TAM_MATRIZ) {
+            throw new IOException("El turno " + turno + " no contiene " + TAM_MATRIZ + " filas completas.");
+        }
         int presas = 0;
         int depredadores = 0;
         int terceras = 0;
         int ocupadas = 0;
 
-        for (String fila : filas) {
-            String[] valores = fila.split(";");
+            for (int indiceFila = 0; indiceFila < filas.size(); indiceFila++) {
+            String[] valores = filas.get(indiceFila).split(";");
+            if (valores.length != TAM_MATRIZ) {
+                throw new IOException("La fila " + (indiceFila + 1) + " del turno " + turno + " no tiene " + TAM_MATRIZ + " columnas.");
+            }
+            
             for (String v : valores) {
-                int val = Integer.parseInt(v.trim());
+                int val;
+
+                try {
+                    val = Integer.parseInt(v.trim());
+                } catch (NumberFormatException ex) {
+                    throw new IOException("Valor no numérico en el turno " + turno + ": '" + v + "'", ex);
+                }
                 if (val == 1) {
                     presas++;
                 } else if (val == 2) {
@@ -99,6 +112,7 @@ public class ReporteService {
                     ocupadas++;
                 }
             }
+        
         }
 
         reporte.setTotalTurnos(Math.max(reporte.getTotalTurnos(), turno));
@@ -115,13 +129,17 @@ public class ReporteService {
         }
     }
 
-    private int parsearTurno(String linea) {
+    private int parsearTurno(String linea)throws IOException {
         int inicio = linea.indexOf("TURNO=");
         int fin = linea.indexOf(";", inicio);
         if (inicio >= 0 && fin > inicio) {
-            return Integer.parseInt(linea.substring(inicio + 6, fin));
+            try {
+                return Integer.parseInt(linea.substring(inicio + 6, fin));
+            } catch (NumberFormatException ex) {
+                throw new IOException("Cabecera de turno inválida: '" + linea + "'", ex);
+            }
         }
-        return 0;
+        throw new IOException("No se pudo identificar el número de turno en la línea: '" + linea + "'");
     }
 
     public String generarPdf(ReporteDatos datos, String nombreArchivo) throws DocumentException, IOException {
