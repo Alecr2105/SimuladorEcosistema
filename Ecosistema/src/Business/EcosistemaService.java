@@ -13,8 +13,6 @@ public class EcosistemaService {
     private AlimentacionService alimentacionService;
     private ReproduccionService reproduccionService;
 
-    
-    
     public EcosistemaService() {
         ecosistema = new Ecosistema();
         ecosistemaDAO = new EcosistemaDAO();
@@ -24,9 +22,6 @@ public class EcosistemaService {
         reproduccionService = new ReproduccionService();
     }
 
-    
-    
-    
     //Generamos los escenarios:
     //**********************************************************
     public void generarEscenario(int presas, int depredadores) {
@@ -35,14 +30,16 @@ public class EcosistemaService {
 
     // Versión con tercera especie
     public void generarEscenario(int presas,
-                                 int depredadores,
-                                 int terceras,
-                                 String varianteTercera) {
-        ecosistema.generarEscenario(presas, depredadores, terceras, varianteTercera);
+            int depredadores,
+            int terceras,
+            String varianteTercera,
+            boolean mutacionesActivas,
+            String tipoMutacion) {
+        ecosistema.generarEscenario(presas, depredadores, terceras, varianteTercera,
+                mutacionesActivas, tipoMutacion);
     }
 
     // ========== ACCESO AL MODELO ==========
-
     public int[][] getMatrizNumerica() {
         return ecosistema.getMatrizNumerica();
     }
@@ -52,7 +49,6 @@ public class EcosistemaService {
     }
 
     // ========== MOVIMIENTO (usa MovimientoService / modelo) ==========
-
     public void moverDepredadores() {
         // delegamos en MovimientoService
         movimientoService.moverDepredadores(ecosistema);
@@ -71,7 +67,6 @@ public class EcosistemaService {
     }
 
     // ========== FIN DE TURNO: hambre + reproducción ==========
-
     public void aplicarFinDeTurnoBasico() {
         // hambre, contadores, muerte y reproducción
         alimentacionService.aplicarReglasAlimentacionYFinTurno(ecosistema);
@@ -81,11 +76,10 @@ public class EcosistemaService {
     }
 
     // ========== ARCHIVOS ==========
-
     public void guardarDatosIniciales(int presas,
-                                      int depredadores,
-                                      int maxTurnos,
-                                      String escenario) {
+            int depredadores,
+            int maxTurnos,
+            String escenario) {
 
         ecosistemaDAO.guardarDatosIniciales(ecosistema, presas, depredadores, maxTurnos, escenario);
     }
@@ -93,4 +87,17 @@ public class EcosistemaService {
     public void guardarEstadoTurno(int numeroTurno, String escenario) {
         ecosistemaDAO.guardarEstadoTurno(ecosistema, numeroTurno, escenario);
     }
+
+    public int getTotalPresas() {
+        return ecosistema.contarPresas();
+    }
+
+    public int getTotalDepredadores() {
+        return ecosistema.contarDepredadores();
+    }
+
+    public int getTotalTerceraEspecie() {
+        return ecosistema.contarTerceraEspecie();
+    }
+
 }
