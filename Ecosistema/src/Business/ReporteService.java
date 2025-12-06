@@ -7,7 +7,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
-
+import java.text.DecimalFormat;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -198,51 +198,67 @@ public class ReporteService {
                                    JFreeChart graficoOcupacion,
                                    String nombreArchivo)
         throws DocumentException, IOException {
+        
+        Document document = new Document(PageSize.A4.rotate());
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(nombreArchivo));
+        document.open();
 
-    Document document = new Document(PageSize.A4.rotate());
-    PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(nombreArchivo));
-    document.open();
+        // ======= PÁGINA 1 – RESUMEN NUMÉRICO =======
+        document.add(new Paragraph("Reporte de simulación",
+                new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 24, com.lowagie.text.Font.BOLD)));
 
-    // ======= PÁGINA 1 – GRÁFICO PRESAS/DEPREDADORES =======
-    document.add(new Paragraph("Relación Presas vs Depredadores",
-            new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 24, com.lowagie.text.Font.BOLD)));
+        document.add(new Paragraph("\n"));
 
-    document.add(new Paragraph("\n")); // espacio
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        document.add(new Paragraph("Turnos ejecutados: " + datos.getTotalTurnos()));
+        document.add(new Paragraph("Presas finales: " + datos.getPresasFinales()));
+        document.add(new Paragraph("Depredadores finales: " + datos.getDepredadoresFinales()));
+        document.add(new Paragraph("Tercera especie final: " + datos.getTerceraEspecieFinal()));
+        document.add(new Paragraph("Ocupación: " + datos.getCeldasOcupadas() + "/" + datos.getTotalCeldas()));
+        document.add(new Paragraph("Porcentaje de ocupación: "
+                + decimalFormat.format(datos.getPorcentajeOcupacion()) + " %"));
 
-    // Convertir gráfico a imagen
-    java.awt.Image img1 = graficoPresas.createBufferedImage(900, 450);
-    com.lowagie.text.Image pdfImg1 = com.lowagie.text.Image.getInstance(writer, img1, 1f);
-    pdfImg1.scaleToFit(780, 400);
-    pdfImg1.setAlignment(com.lowagie.text.Image.ALIGN_CENTER);
+        String mensajeExtincionPresas = datos.getTurnoExtincionPresas() == null
+                ? "No se extinguieron las presas"
+                : "Se extinguieron las presas en el turno " + datos.getTurnoExtincionPresas();
+        String mensajeExtincionDepredadores = datos.getTurnoExtincionDepredadores() == null
+                ? "No se extinguieron los depredadores"
+                : "Se extinguieron los depredadores en el turno " + datos.getTurnoExtincionDepredadores();
 
-    document.add(pdfImg1);
+        document.add(new Paragraph(mensajeExtincionPresas));
+        document.add(new Paragraph(mensajeExtincionDepredadores));
 
-    document.add(new Paragraph("\nTurnos ejecutados: " + datos.getTotalTurnos()));
-    document.add(new Paragraph("Presas finales: " + datos.getPresasFinales() +
-                               " | Depredadores finales: " + datos.getDepredadoresFinales()));
+        document.newPage();
 
-    document.newPage();
+        // ======= PÁGINA 2 – GRÁFICOS =======
+        document.add(new Paragraph("Gráficos de la simulación",
+                new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 24, com.lowagie.text.Font.BOLD)));
 
+        document.add(new Paragraph("\n")); // espacio
 
-    // ======= PÁGINA 2 – GRÁFICO OCUPACIÓN =======
-    document.add(new Paragraph("Ocupación del Ecosistema",
-            new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 24, com.lowagie.text.Font.BOLD)));
+        // Gráfico de presas vs depredadores
+        java.awt.Image img1 = graficoPresas.createBufferedImage(900, 450);
+        com.lowagie.text.Image pdfImg1 = com.lowagie.text.Image.getInstance(writer, img1, 1f);
+        pdfImg1.scaleToFit(780, 320);
+        pdfImg1.setAlignment(com.lowagie.text.Image.ALIGN_CENTER);
+        document.add(pdfImg1);
 
-    document.add(new Paragraph("\n"));
+        document.add(new Paragraph("\n"));
 
-    java.awt.Image img2 = graficoOcupacion.createBufferedImage(900, 450);
-    com.lowagie.text.Image pdfImg2 = com.lowagie.text.Image.getInstance(writer, img2, 1f);
-    pdfImg2.scaleToFit(780, 400);
-    pdfImg2.setAlignment(com.lowagie.text.Image.ALIGN_CENTER);
+        // Gráfico de ocupación
+        java.awt.Image img2 = graficoOcupacion.createBufferedImage(900, 450);
+        com.lowagie.text.Image pdfImg2 = com.lowagie.text.Image.getInstance(writer, img2, 1f);
+        pdfImg2.scaleToFit(780, 320);
+        pdfImg2.setAlignment(com.lowagie.text.Image.ALIGN_CENTER);
+        document.add(pdfImg2);
 
-    document.add(pdfImg2);
+        document.add(new Paragraph("\nOcupadas: " + datos.getCeldasOcupadas()
+                + " / " + datos.getTotalCeldas()
+                + " (" + decimalFormat.format(datos.getPorcentajeOcupacion()) + " %)"));
 
-    document.add(new Paragraph("\nOcupadas: " + datos.getCeldasOcupadas() +
-                               " / " + datos.getTotalCeldas() +
-                               " (" + datos.getPorcentajeOcupacion() + "%)"));
-
-    document.close();
-    return nombreArchivo;
-}
+        document.close();
+        return nombreArchivo;
+    
+    }
 
 }
