@@ -276,9 +276,13 @@ public class EcosistemaController {
     
     private void finalizarSimulacion() {
         if (timer.isRunning()) {
-            timer.stop();
-        }
-        vista.mostrarReporte();
+        timer.stop();
+    }
+
+    vista.habilitarTabReporte();
+
+    // Mostrar reporte
+    vista.mostrarReporte();
     }
 
 }
