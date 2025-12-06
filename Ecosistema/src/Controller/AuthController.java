@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
 import java.util.Date;
 
 public class AuthController {
-
     private frmPrincipal view;
     private AuthService service;
 
@@ -37,7 +36,7 @@ public class AuthController {
 
         // Botones de autenticación:
         this.view.getBtnRegistrar().addActionListener(e -> registrarUsuario());
-        this.view.getBtnIniciar().addActionListener(e -> iniciarSesion());
+        this.view.getBtnIngresar().addActionListener(e -> iniciarSesion());
         this.view.getBtnCerrarSesion().addActionListener(e -> cerrarSesion());
     }
 

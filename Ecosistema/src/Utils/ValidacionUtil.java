@@ -51,4 +51,26 @@ public class ValidacionUtil {
        
         return edad >= 18;
     }
+    
+    
+    
+    
+    
+    
+    //Validaciones en ECOSISTEMAS:
+    public static boolean validarSelecciones(Object escenario, boolean terceraEspecieActiva,
+        Object  varianteTercera, boolean mutacionesActivas, Object tipoMutacion){
+        
+        if(escenario == null || escenario.toString().trim().isEmpty()) return  false;
+        
+        if(terceraEspecieActiva) {
+            if(varianteTercera == null || varianteTercera.toString().trim().isEmpty()) return false;
+        }
+        if(mutacionesActivas) {
+            if(tipoMutacion == null || tipoMutacion.toString().trim().isEmpty()){
+                return false;
+            }
+        }
+        return true;
+    }
 }

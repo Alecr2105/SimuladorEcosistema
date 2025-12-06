@@ -4,7 +4,6 @@ import Data.EcosistemaDAO;
 import Model.Ecosistema;
 
 public class EcosistemaService {
-
     private Ecosistema ecosistema;
     private EcosistemaDAO ecosistemaDAO;
 
@@ -38,15 +37,23 @@ public class EcosistemaService {
         ecosistema.generarEscenario(presas, depredadores, terceras, varianteTercera,
                 mutacionesActivas, tipoMutacion);
     }
+    
+    
 
     // ========== ACCESO AL MODELO ==========
     public int[][] getMatrizNumerica() {
         return ecosistema.getMatrizNumerica();
     }
 
+    
+    
+    
     public Ecosistema getEcosistema() {
         return ecosistema;
     }
+    
+    
+    
 
     // ========== MOVIMIENTO (usa MovimientoService / modelo) ==========
     public void moverDepredadores() {
@@ -59,12 +66,21 @@ public class EcosistemaService {
         movimientoService.moverPresas(ecosistema);
     }
 
-    // 👉 ESTE ES EL QUE TE FALTABA
+    
+    
+    
+    
     public void moverTerceraEspecie() {
         // por ahora llamamos directo al modelo
         ecosistema.moverSoloTerceraEspecie();
         // si quieres, luego puedes mover esto a MovimientoService
     }
+    
+    
+    
+    
+    
+    
 
     // ========== FIN DE TURNO: hambre + reproducción ==========
     public void aplicarFinDeTurnoBasico() {
@@ -74,6 +90,10 @@ public class EcosistemaService {
         // gancho para futura lógica extra de reproducción
         reproduccionService.aplicarReglasReproduccion(ecosistema);
     }
+    
+    
+    
+    
 
     // ========== ARCHIVOS ==========
     public void guardarDatosIniciales(int presas,
@@ -84,6 +104,13 @@ public class EcosistemaService {
         ecosistemaDAO.guardarDatosIniciales(ecosistema, presas, depredadores, maxTurnos, escenario);
     }
 
+    
+    
+    
+    
+    
+    
+    
     public void guardarEstadoTurno(int numeroTurno, String escenario) {
         ecosistemaDAO.guardarEstadoTurno(ecosistema, numeroTurno, escenario);
     }
