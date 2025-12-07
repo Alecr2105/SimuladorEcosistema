@@ -542,15 +542,17 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="pnlTerceraEspecie" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="chkMutacionesGeneticas" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="cmbMutacion" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="btnIniciar" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
-                                  <Component id="btnPausar" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="btnGenerarEcosistema" alignment="1" min="-2" pref="29" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="btnIniciar" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
+                                      <Component id="btnPausar" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jlConsolaEventos" min="-2" max="-2" attributes="0"/>
@@ -998,6 +1000,10 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtExtincion1">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtExtincion1ActionPerformed"/>
               </Events>
@@ -1008,6 +1014,10 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtExtincion2">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
             </Component>
             <Container class="javax.swing.JPanel" name="pnlGraficoOcupacion">
               <Properties>

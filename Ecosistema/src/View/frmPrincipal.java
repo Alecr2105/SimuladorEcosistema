@@ -534,11 +534,11 @@ public class frmPrincipal extends javax.swing.JFrame {
         spnCantidadTurnos.setEnabled(false);
 
         txtExtincion1.setText(datos.getTurnoExtincionPresas() == null
-                ? "N/A"
+                ? "Ninguno"
                 : datos.getTurnoExtincionPresas().toString());
 
         txtExtincion2.setText(datos.getTurnoExtincionDepredadores() == null
-                ? "N/A"
+                ? "Ninguno"
                 : datos.getTurnoExtincionDepredadores().toString());
 
         // Dibujar gráficos
@@ -1022,14 +1022,15 @@ public class frmPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pnlTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chkMutacionesGeneticas)
                             .addComponent(cmbMutacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnGenerarEcosistema, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnGenerarEcosistema, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jlConsolaEventos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1064,6 +1065,8 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblPrimeraExtincion.setText("presas extintas en el turno:");
 
+        txtExtincion1.setEditable(false);
+        txtExtincion1.setEnabled(false);
         txtExtincion1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtExtincion1ActionPerformed(evt);
@@ -1071,6 +1074,9 @@ public class frmPrincipal extends javax.swing.JFrame {
         });
 
         lblSegundaExtincion.setText("Depredadores extintos en el turno:");
+
+        txtExtincion2.setEditable(false);
+        txtExtincion2.setEnabled(false);
 
         pnlGraficoOcupacion.setMinimumSize(new java.awt.Dimension(450, 240));
         pnlGraficoOcupacion.setPreferredSize(new java.awt.Dimension(450, 240));

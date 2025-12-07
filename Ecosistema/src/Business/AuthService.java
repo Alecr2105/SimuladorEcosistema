@@ -107,4 +107,18 @@ public class AuthService {
             JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de inicio de sesión: " + e.getMessage());
         }
     }
+    
+    public void enviarCorreoCierreSesion(Usuario usuario) {
+        if (usuario == null) {
+            return;
+        }
+
+        try {
+            String asunto = "Cierre de sesión en EcoSim";
+            String mensaje = "Se ha cerrado sesión en su cuenta de EcoSim.";
+            emailService.enviarCorreo(usuario.getCorreo(), asunto, mensaje);
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de cierre de sesión: " + e.getMessage());
+        }
+    }
 }

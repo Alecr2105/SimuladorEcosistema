@@ -208,7 +208,8 @@ public class AuthController {
         
         view.deshabilitarTabReporte();
         
-        //Marcar sesion como cerrada:
+        //Enviar notificación y marcar sesión como cerrada:
+        service.enviarCorreoCierreSesion(usuarioActual);
         sesionIniciada = false;
         usuarioActual = null;
         
