@@ -13,15 +13,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.swing.JOptionPane;
 
+
 public class AuthService {
     private final UsuarioDAO userDAO = new UsuarioDAO();
     private final EmailService emailService = new EmailService();
-
+  
     
-    
-    
-    
-    //LOGIN: Validate ID and encrypted password: 
+    //LOGIN: Validamos cédula y encriptamos contraseña: 
     public boolean iniciarSesion(int cedula, String contrasena){
         //Buscar usuario:
         Usuario found = userDAO.buscarPorCedula(cedula);
@@ -44,33 +42,30 @@ public class AuthService {
     
     
     
-    
     public boolean registrarUsuario(Usuario nuevo){
-        //Check if a user with this Id number exists:
+        //Validamos si existe usuario con ese ID:
         Usuario exists = userDAO.buscarPorCedula(nuevo.getCedula());
         if(exists != null){
             JOptionPane.showMessageDialog(null, "Usuario ya existente con ese número de cédula",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return false; //User exist
         }
-        //Encrypts password before saving.
+        //Encriptamos la contraseña antes de guardar:
         String passEnc = encriptar(nuevo.getContrasena());
         nuevo.setContrasena(passEnc);
         
-        //Saving in the file:
+        //Guardamos en el archivo:
         userDAO.guardarUsuario(nuevo);
         JOptionPane.showMessageDialog(null, "Usuario registrado exitosamente.");
         enviarCorreoRegistro(nuevo);
         return true;
     }
     
-    public Usuario buscarPorCedula(int cedula) {
-        return userDAO.buscarPorCedula(cedula);
-    }
     
     
     
-    //Encrypt the entered password(SHA-256):
+    
+    //Encriptamos la contraseña utilizando SHA-256:
     //**************************************
     public String encriptar(String contr){
         try{
@@ -97,7 +92,7 @@ public class AuthService {
             JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de registro: " + e.getMessage());
         }
     }
-
+    
     private void enviarCorreoInicioSesion(Usuario usuario) {
         try {
             String asunto = "Inicio de sesión en EcoSim";
@@ -120,5 +115,9 @@ public class AuthService {
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(null, "No se pudo enviar el correo de cierre de sesión: " + e.getMessage());
         }
+    }
+    
+    public Usuario buscarPorCedula(int cedula) {
+        return userDAO.buscarPorCedula(cedula);
     }
 }

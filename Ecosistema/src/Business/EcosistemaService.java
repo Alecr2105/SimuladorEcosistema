@@ -7,7 +7,7 @@ public class EcosistemaService {
     private Ecosistema ecosistema;
     private EcosistemaDAO ecosistemaDAO;
 
-    // Servicios especializados
+    //Servicios:
     private MovimientoService movimientoService;
     private AlimentacionService alimentacionService;
     private ReproduccionService reproduccionService;
@@ -21,13 +21,13 @@ public class EcosistemaService {
         reproduccionService = new ReproduccionService();
     }
 
+    
     //Generamos los escenarios:
-    //**********************************************************
     public void generarEscenario(int presas, int depredadores) {
         ecosistema.generarEscenario(presas, depredadores);
     }
 
-    // Versión con tercera especie
+    //Tercera especie:
     public void generarEscenario(int presas,
             int depredadores,
             int terceras,
@@ -38,24 +38,18 @@ public class EcosistemaService {
                 mutacionesActivas, tipoMutacion);
     }
     
-    
-
-    // ========== ACCESO AL MODELO ==========
+    //Acceso al modelo:
     public int[][] getMatrizNumerica() {
         return ecosistema.getMatrizNumerica();
     }
-
-    
     
     
     public Ecosistema getEcosistema() {
         return ecosistema;
     }
     
-    
-    
 
-    // ========== MOVIMIENTO (usa MovimientoService / modelo) ==========
+    //Movimiento (utiliza movimietoService):
     public void moverDepredadores() {
         // delegamos en MovimientoService
         movimientoService.moverDepredadores(ecosistema);
@@ -67,35 +61,19 @@ public class EcosistemaService {
     }
 
     
-    
-    
-    
     public void moverTerceraEspecie() {
-        // por ahora llamamos directo al modelo
         ecosistema.moverSoloTerceraEspecie();
-        // si quieres, luego puedes mover esto a MovimientoService
     }
     
-    
-    
-    
-    
-    
 
-    // ========== FIN DE TURNO: hambre + reproducción ==========
+    //Fin de turnos: hambre + reproducción:
     public void aplicarFinDeTurnoBasico() {
-        // hambre, contadores, muerte y reproducción
+        //Hambre, contadores, muerte y reproducción:
         alimentacionService.aplicarReglasAlimentacionYFinTurno(ecosistema);
-
-        // gancho para futura lógica extra de reproducción
         reproduccionService.aplicarReglasReproduccion(ecosistema);
     }
     
-    
-    
-    
-
-    // ========== ARCHIVOS ==========
+    //Archivos:
     public void guardarDatosIniciales(int presas,
             int depredadores,
             int maxTurnos,

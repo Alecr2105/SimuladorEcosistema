@@ -10,6 +10,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import java.text.DecimalFormat;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,8 +23,8 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.jfree.chart.JFreeChart;
 
-public class ReporteService {
 
+public class ReporteService {
     private static final Logger LOGGER = Logger.getLogger(ReporteService.class.getName());
     private static final String ARCHIVO_ESTADOS = "estado_turnos.txt";
     private static final int TAM_MATRIZ = 10;
@@ -31,20 +32,20 @@ public class ReporteService {
     private final EmailService emailService = new EmailService();
 
    
-    //Método de conveniencia: siempre devuelve un ReporteDatos, aunque haya
+    //Método que devuelve un ReporteDatos, aunque haya
     //problemas leyendo el archivo.
     public ReporteDatos cargarDatosDesdeArchivo() {
         return cargarDatosDesdeArchivo(ARCHIVO_ESTADOS);
     }
 
+    
+    
     public ReporteDatos cargarDatosDesdeArchivo(String ruta) {
         File archivo = new File(ruta);
-
         if (!archivo.exists()) {
             LOGGER.log(Level.WARNING, "No se encontró el archivo de estados: {0}", ruta);
             return crearReporteVacio();
         }
-
         ReporteDatos reporteActual = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
         boolean seLeyeronTurnos = false;
 
@@ -54,16 +55,15 @@ public class ReporteService {
             List<String> filas = new ArrayList<>();
 
             while ((linea = br.readLine()) != null) {
-                if (linea.startsWith("---TURNO=")) {
-                    // Cerrar turno anterior si estaba en proceso
+                if (linea.startsWith("   TURNO =")) {
+                    //Cerramos turno anterior si estaba en proceso:
                     if (turnoEnProceso != null && !filas.isEmpty()) {
                         seLeyeronTurnos |= procesarTurno(turnoEnProceso, filas, reporteActual);
                     }
-
                     turnoEnProceso = parsearTurnoSeguro(linea);
                     filas = new ArrayList<>();
 
-                    // Si es un nuevo ciclo (turno 0) reiniciamos acumuladores
+                    //Si es un nuevo ciclo (turno 0) reiniciamos acumuladores:
                     if (turnoEnProceso != null && turnoEnProceso == 0) {
                         reporteActual = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
                     }
@@ -77,27 +77,24 @@ public class ReporteService {
                     filas.add(linea.trim());
                 }
             }
-
-            // Procesar el último turno que haya quedado pendiente
+            //Procesamos el último turno que haya quedado pendiente:
             if (turnoEnProceso != null && !filas.isEmpty()) {
                 seLeyeronTurnos |= procesarTurno(turnoEnProceso, filas, reporteActual);
             }
-
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Error leyendo el archivo de estados: " + ruta, e);
             return crearReporteVacio();
         }
-
         if (!seLeyeronTurnos) {
             LOGGER.warning("El archivo de estados no contiene turnos válidos de simulación.");
             return crearReporteVacio();
         }
-
         return reporteActual;
     }
 
-     //Crea un reporte vacío (todo en 0) para evitar romper la UI.
-   
+    
+    
+    //Creamos un reporte vacío (todo en 0) para evitar romper la UI:
     private ReporteDatos crearReporteVacio() {
         ReporteDatos datos = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
         datos.setTotalTurnos(0);
@@ -111,8 +108,7 @@ public class ReporteService {
     }
 
     
-    //Procesa un bloque de 10 filas (un turno) y actualiza el reporte.
-    
+    //Procesamos un bloque de 10 filas (un turno) y actualiza el reporte:
     private boolean procesarTurno(int turno, List<String> filas, ReporteDatos reporte) {
         if (filas.size() != TAM_MATRIZ) {
             LOGGER.log(Level.WARNING,
@@ -124,7 +120,6 @@ public class ReporteService {
         int depredadores = 0;
         int terceras = 0;
         int ocupadas = 0;
-
         for (int indiceFila = 0; indiceFila < filas.size(); indiceFila++) {
             String[] valores = filas.get(indiceFila).split(";");
             if (valores.length != TAM_MATRIZ) {
@@ -133,7 +128,6 @@ public class ReporteService {
                         new Object[]{indiceFila + 1, turno, TAM_MATRIZ});
                 return false;
             }
-
             for (String v : valores) {
                 int val;
 
@@ -160,7 +154,7 @@ public class ReporteService {
             }
         }
 
-        // Actualizar datos del reporte con el último turno leído
+        //Actualizamos datos del reporte con el último turno leído:
         reporte.setTotalTurnos(Math.max(reporte.getTotalTurnos(), turno));
         reporte.setPresasFinales(presas);
         reporte.setDepredadoresFinales(depredadores);
@@ -177,9 +171,8 @@ public class ReporteService {
     }
 
     
-    //Intenta extraer el número de turno de la cabecera, pero nunca lanza
-    //excepción.
-
+    
+    //Intenta extraer el número de turno:
     private Integer parsearTurnoSeguro(String linea) {
         try {
             int inicio = linea.indexOf("TURNO=");
@@ -193,17 +186,8 @@ public class ReporteService {
         return null;
     }
 
-
-
-
-
-
-
-
-
     
-    //Genera un PDF a partir de los datos ya cargados.
-
+    //Generamos PDF de los datos ya obtenidos:
     public String generarPdfConGraficos(ReporteDatos datos,
                                    JFreeChart graficoPresas,
                                    JFreeChart graficoOcupacion,
@@ -213,8 +197,9 @@ public class ReporteService {
         Document document = new Document(PageSize.A4.rotate());
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(nombreArchivo));
         document.open();
-
-        // ======= PÁGINA 1 – RESUMEN NUMÉRICO =======
+        
+        //PAGINA 1: Resumen de los resultados
+        //***********************************
         document.add(new Paragraph("Reporte de simulación",
                 new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 24, com.lowagie.text.Font.BOLD)));
 
@@ -240,14 +225,18 @@ public class ReporteService {
         document.add(new Paragraph(mensajeExtincionDepredadores));
 
         document.newPage();
+        
+        
+        
 
-        // ======= PÁGINA 2 – GRÁFICOS =======
+        //PAGINA 2: Gráficos
+        //******************
         document.add(new Paragraph("Gráficos de la simulación",
                 new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 24, com.lowagie.text.Font.BOLD)));
 
-        document.add(new Paragraph("\n")); // espacio
+        document.add(new Paragraph("\n"));
 
-        // Gráfico de presas vs depredadores
+        //Gráfico de presas vs depredadores:
         java.awt.Image img1 = graficoPresas.createBufferedImage(900, 450);
         com.lowagie.text.Image pdfImg1 = com.lowagie.text.Image.getInstance(writer, img1, 1f);
         pdfImg1.scaleToFit(780, 320);
@@ -256,7 +245,7 @@ public class ReporteService {
 
         document.add(new Paragraph("\n"));
 
-        // Gráfico de ocupación
+        //Gráfico de ocupación:
         java.awt.Image img2 = graficoOcupacion.createBufferedImage(900, 450);
         com.lowagie.text.Image pdfImg2 = com.lowagie.text.Image.getInstance(writer, img2, 1f);
         pdfImg2.scaleToFit(780, 320);
@@ -273,11 +262,12 @@ public class ReporteService {
     
     
     
+    
+    
     public void enviarPdfPorCorreo(String rutaPdf) {
         if (AuthController.usuarioActual == null) {
             return;
         }
-
         String destinatario = AuthController.usuarioActual.getCorreo();
 
         if (destinatario == null || destinatario.isEmpty()) {
@@ -285,7 +275,6 @@ public class ReporteService {
                     "El usuario no tiene correo registrado.");
             return;
         }
-
         try {
             emailService.enviarCorreoConAdjunto(
                     destinatario,
