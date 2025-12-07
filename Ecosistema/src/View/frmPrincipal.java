@@ -29,12 +29,14 @@ public class frmPrincipal extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);//centramos pantalla:
         cmbEscenario.setModel(new javax.swing.DefaultComboBoxModel<>(
-                new String[]{"Equilibrado", "Depredadores dominan", "Presas dominan"}
+                new String[]{"Seleccione un escenario","Equilibrado", "Depredadores dominan", "Presas dominan"}
         ));
+        cmbEscenario.setSelectedIndex(0);
+        
         cmbMutacion.setModel(new javax.swing.DefaultComboBoxModel<>(
-                new String[]{"Furia (depredadores)", "Veneno (presas)"}
+                new String[]{"Seleccione una mutación","Furia (depredadores)", "Veneno (presas)"}
         ));
-        cmbMutacion.setEnabled(false);
+        cmbMutacion.setSelectedIndex(0);
 
         //Personalizacion de tabs con FlatLaf
         tbpPrincipal.putClientProperty("JTabbedPane.tabHeight", 40);
@@ -177,6 +179,13 @@ public class frmPrincipal extends javax.swing.JFrame {
         });
     }
 
+    
+    
+    
+    
+    
+    
+    
     //Bloqueos:
     //***************************************************************
     //No permite volver al tab inicio a menos que se cierre la sesion:
@@ -222,6 +231,10 @@ public class frmPrincipal extends javax.swing.JFrame {
             }
         });
     }
+    
+    
+    
+    
 
     //Getters de los componentes:
     //***************************************************************
@@ -510,7 +523,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         jlSimuladorEcosistemas = new javax.swing.JLabel();
         jlMatriz10x10 = new javax.swing.JLabel();
         jlControles = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jlConsolaEventos = new javax.swing.JLabel();
         jlExtensiones = new javax.swing.JLabel();
         pnlReporte = new javax.swing.JPanel();
         lblTurnos = new javax.swing.JLabel();
@@ -798,9 +811,9 @@ public class frmPrincipal extends javax.swing.JFrame {
         jlControles.setForeground(new java.awt.Color(0, 51, 102));
         jlControles.setText("Controles");
 
-        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 51, 102));
-        jLabel1.setText("Consola de eventos");
+        jlConsolaEventos.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
+        jlConsolaEventos.setForeground(new java.awt.Color(0, 51, 102));
+        jlConsolaEventos.setText("Consola de eventos");
 
         jlExtensiones.setText("Extensiones:");
 
@@ -823,7 +836,7 @@ public class frmPrincipal extends javax.swing.JFrame {
                                         .addComponent(jlSeleccionarEscenario)
                                         .addGap(18, 18, 18)
                                         .addComponent(cmbEscenario, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel1)
+                                    .addComponent(jlConsolaEventos)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jlControles)
                                     .addComponent(jlExtensiones)
@@ -886,7 +899,7 @@ public class frmPrincipal extends javax.swing.JFrame {
                                 .addComponent(btnPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
+                        .addComponent(jlConsolaEventos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1240,10 +1253,10 @@ public class frmPrincipal extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbMutacion;
     private com.toedter.calendar.JDateChooser dtRegFecha;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel jlConsolaEventos;
     private javax.swing.JLabel jlControles;
     private javax.swing.JLabel jlExtensiones;
     private javax.swing.JLabel jlGenero;

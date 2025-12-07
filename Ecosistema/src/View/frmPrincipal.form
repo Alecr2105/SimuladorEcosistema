@@ -457,7 +457,7 @@
                                               <EmptySpace type="separate" max="-2" attributes="0"/>
                                               <Component id="cmbEscenario" min="-2" pref="197" max="-2" attributes="0"/>
                                           </Group>
-                                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jlConsolaEventos" min="-2" max="-2" attributes="0"/>
                                           <Component id="jScrollPane2" min="-2" pref="538" max="-2" attributes="0"/>
                                           <Component id="jlControles" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="jlExtensiones" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -539,7 +539,7 @@
                                   </Group>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <Component id="jlConsolaEventos" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jScrollPane2" min="-2" pref="202" max="-2" attributes="0"/>
                           </Group>
@@ -802,7 +802,7 @@
                 <Property name="text" type="java.lang.String" value="Controles"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel1">
+            <Component class="javax.swing.JLabel" name="jlConsolaEventos">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="14" style="1"/>
