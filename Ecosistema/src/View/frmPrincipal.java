@@ -12,6 +12,7 @@ import java.awt.event.FocusEvent;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -25,8 +26,15 @@ public class frmPrincipal extends javax.swing.JFrame {
     private final EmailService emailService = new EmailService();
     private boolean reporteDesbloqueado = false;
 
+    
+    
+    
     public frmPrincipal() {
         initComponents();
+      
+        //Botón:
+        btngTerceraEspecie.clearSelection();
+        
         setLocationRelativeTo(null);//centramos pantalla:
         cmbEscenario.setModel(new javax.swing.DefaultComboBoxModel<>(
                 new String[]{"Seleccione un escenario","Equilibrado", "Depredadores dominan", "Presas dominan"}
@@ -91,6 +99,12 @@ public class frmPrincipal extends javax.swing.JFrame {
         ecosistemaController = new EcosistemaController(this);
     }
 
+    
+    
+    
+    
+    
+    
     public void mostrarCamposRegistro() {
         txtRegCedula.setVisible(true);
         txtRegNombre.setVisible(true);
@@ -106,24 +120,60 @@ public class frmPrincipal extends javax.swing.JFrame {
         jlRegistroUsuario.setVisible(true);
         jlTieneCuenta.setVisible(true);
     }
+    
+    
+    
+    
+    
+    
 
     public void limpiarCampos() {
-        // LOGIN
+        //LOGIN:
         txtCedula.setText("");
         pwdLogin.setText("");
 
-        // REGISTRO
+        //REGISTRO:
         txtRegCedula.setText("");
         txtRegNombre.setText("");
         txtRegCorreo.setText("");
         pwpReg.setText("");
         dtRegFecha.setDate(null);
-
         rdbRegMasculino.setSelected(false);
         rdbRegFemenino.setSelected(false);
+        
+        
+        //ECOSISTEMAS:
+        chkMutacionesGeneticas.setSelected(false);
+        rbtnTerceraEspecie.setSelected(false);
+        btngTerceraEspecie.clearSelection();
 
+        // Combos
+        if (cmbEscenario.getItemCount() > 0) cmbEscenario.setSelectedIndex(0);
+        if (cmbMutacion.getItemCount() > 0) cmbMutacion.setSelectedIndex(0);
+        
+
+        // Limpiar tabla
+        DefaultTableModel model = (DefaultTableModel) tblEcosistema.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                model.setValueAt(null, i, j);
+            }
+        }
+
+        //Limpiamos el log:
+        txtMovimientos.setText("");
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // Placeholder para JTextField
     public void setPlaceholder(JTextField txt, String placeholder) {
         txt.setForeground(Color.GRAY);
@@ -201,7 +251,8 @@ public class frmPrincipal extends javax.swing.JFrame {
     public void setReporteDesbloqueado(boolean valor) {
         this.reporteDesbloqueado = valor;
     }
-
+    
+    //En inicio de sesión:
     public void bloquearAccesoReporte() {
         tbpPrincipal.setEnabledAt(2, false); // Tab Reporte deshabilitado
 
@@ -213,7 +264,13 @@ public class frmPrincipal extends javax.swing.JFrame {
             }
         });
     }
-
+    
+    //Al cerrar sesión:
+    public void deshabilitarTabReporte(){
+        tbpPrincipal.setEnabledAt(2, false);  
+        this.reporteDesbloqueado = false;
+    }
+    
     public void habilitarTabReporte() {
         tbpPrincipal.setEnabledAt(2, true);  
         this.reporteDesbloqueado = true;    
@@ -231,6 +288,10 @@ public class frmPrincipal extends javax.swing.JFrame {
             }
         });
     }
+    
+    
+    
+    
     
     
     
@@ -344,6 +405,60 @@ public class frmPrincipal extends javax.swing.JFrame {
     public javax.swing.JComboBox<String> getCmbMutacion() {
         return cmbMutacion;
     }
+    public javax.swing.JRadioButton getRbtnEspecieMutante() {
+        return rbtnEspecieMutante;
+    }
+    public javax.swing.JRadioButton getRbtnAliadasPresas() {
+        return rbtnEspecieAliadaPresas;
+    }
+    public javax.swing.JRadioButton getRbtnAliadosDepredadores() {
+        return rbtnEspecieAliadaDepredadores;
+    }
+    public javax.swing.JCheckBox getChkMutacionesGneticas() {
+        return chkMutacionesGeneticas;
+    }
+    public boolean isTerceraEspecieActiva() {
+        return rbtnTerceraEspecie.isSelected();
+    }
+
+    public String getOpcionTerceraEspecie() {
+        if (rbtnEspecieMutante.isSelected()) {
+            return "Mutante";
+        } else if (rbtnEspecieAliadaPresas.isSelected()) {
+            return "AliadaPresas";
+        } else if (rbtnEspecieAliadaDepredadores.isSelected()) {
+            return "AliadaDepredadores";
+        }
+        return null; // ninguna
+    }
+
+    public javax.swing.JTextArea getTxtMovimientos() {
+        return txtMovimientos;
+    }
+
+    public boolean isMutacionesActivadas() {
+        return chkMutacionesGeneticas.isSelected();
+    }
+
+    public String getTipoMutacionSeleccionado() {
+        if (!chkMutacionesGeneticas.isSelected()) {
+            return null;
+        }
+        String texto = (String) cmbMutacion.getSelectedItem();
+        if (texto == null) {
+            return null;
+        }
+
+        if (texto.startsWith("Furia")) {
+            return "FURIA";
+        } else if (texto.startsWith("Veneno")) {
+            return "VENENO";
+        }
+        return null;
+    }
+    
+    
+    
     
     
     
@@ -702,7 +817,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         btnIniciar.setBackground(new java.awt.Color(0, 0, 102));
         btnIniciar.setForeground(new java.awt.Color(255, 255, 255));
-        btnIniciar.setText("Iniciar");
+        btnIniciar.setText("Iniciar Simulación");
         btnIniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIniciarActionPerformed(evt);
@@ -786,6 +901,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         jlSeleccionarEscenario.setText("Seleccione un escenario:");
 
+        txtMovimientos.setEditable(false);
         txtMovimientos.setColumns(20);
         txtMovimientos.setRows(5);
         jScrollPane2.setViewportView(txtMovimientos);
@@ -822,7 +938,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         pnlEcosistemasLayout.setHorizontalGroup(
             pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlEcosistemasLayout.createSequentialGroup()
-                .addContainerGap(27, Short.MAX_VALUE)
+                .addContainerGap(24, Short.MAX_VALUE)
                 .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jlMatriz10x10)
                     .addGroup(pnlEcosistemasLayout.createSequentialGroup()
@@ -847,17 +963,17 @@ public class frmPrincipal extends javax.swing.JFrame {
                                                 .addGap(48, 48, 48)
                                                 .addComponent(btnGenerarEcosistema, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                             .addComponent(chkMutacionesGeneticas, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(cmbMutacion, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(pnlEcosistemasLayout.createSequentialGroup()
                                                 .addComponent(btnPausar)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(cmbMutacion, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addGroup(pnlEcosistemasLayout.createSequentialGroup()
                                 .addGap(36, 36, 36)
                                 .addComponent(pnlTerceraEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEcosistemasLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jlSimuladorEcosistemas, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -872,13 +988,16 @@ public class frmPrincipal extends javax.swing.JFrame {
                 .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jlSimuladorEcosistemas, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14)
-                .addComponent(jlMatriz10x10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlEcosistemasLayout.createSequentialGroup()
-                        .addComponent(jlControles)
+                        .addGap(14, 14, 14)
+                        .addComponent(jlMatriz10x10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlEcosistemasLayout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(jlControles)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jlSeleccionarEscenario)
                             .addComponent(cmbEscenario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -893,16 +1012,14 @@ public class frmPrincipal extends javax.swing.JFrame {
                             .addComponent(chkMutacionesGeneticas)
                             .addComponent(cmbMutacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnGenerarEcosistema, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(pnlEcosistemasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnGenerarEcosistema, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jlConsolaEventos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(33, 33, 33))
         );
 
@@ -1110,45 +1227,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     
     
 
-    public boolean isTerceraEspecieActiva() {
-        return rbtnTerceraEspecie.isSelected();
-    }
-
-    public String getOpcionTerceraEspecie() {
-        if (rbtnEspecieMutante.isSelected()) {
-            return "Mutante";
-        } else if (rbtnEspecieAliadaPresas.isSelected()) {
-            return "AliadaPresas";
-        } else if (rbtnEspecieAliadaDepredadores.isSelected()) {
-            return "AliadaDepredadores";
-        }
-        return null; // ninguna
-    }
-
-    public javax.swing.JTextArea getTxtMovimientos() {
-        return txtMovimientos;
-    }
-
-    public boolean isMutacionesActivadas() {
-        return chkMutacionesGeneticas.isSelected();
-    }
-
-    public String getTipoMutacionSeleccionado() {
-        if (!chkMutacionesGeneticas.isSelected()) {
-            return null;
-        }
-        String texto = (String) cmbMutacion.getSelectedItem();
-        if (texto == null) {
-            return null;
-        }
-
-        if (texto.startsWith("Furia")) {
-            return "FURIA";
-        } else if (texto.startsWith("Veneno")) {
-            return "VENENO";
-        }
-        return null;
-    }
+    
 
     private void dibujarGraficoPresasDepredadores(ReporteDatos datos) {
         try {

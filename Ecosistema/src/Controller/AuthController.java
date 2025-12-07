@@ -107,7 +107,6 @@ public class AuthController {
     //***********************************************************************************
     //Registrar:
     private void registrarUsuario() {
-
         if (!validarRegistro()) return;
 
         try {
@@ -135,6 +134,10 @@ public class AuthController {
     }
     
     
+    
+    
+    
+    
     //Iniciar Sesión:
     private void iniciarSesion() {
 
@@ -152,7 +155,6 @@ public class AuthController {
             return; //Detenemos el proceso de login
         }
         
-
         try {
 
             boolean ok = service.iniciarSesion(Integer.parseInt(ced), pwd);
@@ -172,6 +174,12 @@ public class AuthController {
             JOptionPane.showMessageDialog(view, "Error al iniciar sesión: " + e.getMessage());
         }
     }
+    
+    
+    
+    
+    
+    
     
     //Cerrar Sesión:
     private void cerrarSesion(){
@@ -197,6 +205,8 @@ public class AuthController {
         view.getTbpPrincipal().setSelectedComponent(view.getPnlInicio());
         
         view.limpiarCampos();
+        
+        view.deshabilitarTabReporte();
         
         //Marcar sesion como cerrada:
         sesionIniciada = false;

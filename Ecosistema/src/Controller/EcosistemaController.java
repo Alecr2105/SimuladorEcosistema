@@ -38,6 +38,10 @@ public class EcosistemaController {
     private boolean mutacionesActivas = false;
     private String tipoMutacionActual = null;
     
+    //Flags de control y verificacion de cambios de extensión:
+    private boolean ecosistemaGenerado = false;   // Marca si se generó un ecosistema
+    private boolean cambiosPendientes = false;    // Marca si se cambiaron extensiones después de generar
+    
     
 
     public EcosistemaController(frmPrincipal vista) {
@@ -59,8 +63,29 @@ public class EcosistemaController {
         //Deshabilitar botones:
         vista.getBtnIniciar().setEnabled(false);
         vista.getBtnPausar().setEnabled(false);
+        
+        //Deshabilitar extensiones al inicio:
+        vista.getChkMutacionesGneticas().setEnabled(false);
+        vista.getRbtnTerceraEspecie().setEnabled(false);
+        
+        //Listener rbtnSeleccionarEscenario:
+        configurarListenerEscenario();
+        
+        ecosistemaGenerado = false;   //Marca si se generó un ecosistema
+        cambiosPendientes = false;    //Todos los cambios
+        
+        //Marcamos cambios en extensiones:
+        vista.getChkMutacionesGneticas().addActionListener(e -> cambiosPendientes = true);
+        vista.getRbtnTerceraEspecie().addActionListener(e -> cambiosPendientes = true);
+        vista.getRbtnEspecieMutante().addActionListener(e -> cambiosPendientes = true);
+        vista.getRbtnAliadasPresas().addActionListener(e -> cambiosPendientes = true);
+        vista.getRbtnAliadosDepredadores().addActionListener(e -> cambiosPendientes = true);
     }
 
+    
+    
+    
+    
     
     
     private void configurarTabla(JTable tabla) {
@@ -79,6 +104,12 @@ public class EcosistemaController {
         tabla.setRowHeight(45);
     }
 
+    
+    
+    
+    
+    
+    
     
     
     
@@ -197,85 +228,146 @@ public class EcosistemaController {
     
     
     
+    private void configurarListenerEscenario() {
+        vista.getCmbEscenario().addActionListener(e -> {
+            Object seleccionado = vista.getCmbEscenario().getSelectedItem();
+
+            if (seleccionado == null || seleccionado.toString().trim().isEmpty() ||
+                seleccionado.toString().equals("Seleccione un escenario")) {
+
+                // Deshabilitar extensiones
+                vista.getCmbMutacion().setEnabled(false);
+                vista.getChkMutacionesGneticas().setEnabled(false);
+                vista.getRbtnTerceraEspecie().setEnabled(false);
+                
+                vista.getRbtnEspecieMutante().setEnabled(false);
+                vista.getRbtnAliadasPresas().setEnabled(false);
+                vista.getRbtnAliadosDepredadores().setEnabled(false);
+            } else {
+                // Habilitar extensiones
+                vista.getCmbMutacion().setEnabled(true);
+                vista.getChkMutacionesGneticas().setEnabled(true);
+                vista.getRbtnTerceraEspecie().setEnabled(true);
+                
+                vista.getRbtnEspecieMutante().setEnabled(true);
+                vista.getRbtnAliadasPresas().setEnabled(true);
+                vista.getRbtnAliadosDepredadores().setEnabled(true);
+            }
+        });
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   
+    
+    private boolean validarExtensiones() {
+        // Tercera especie
+        if (!ValidacionUtil.terceraEspecieValida(
+                vista.isTerceraEspecieActiva(),
+                vista.getRbtnEspecieMutante().isSelected(),
+                vista.getRbtnAliadasPresas().isSelected(),
+                vista.getRbtnAliadosDepredadores().isSelected())) {
+
+            JOptionPane.showMessageDialog(vista,
+                    "Debe seleccionar una variante de la tercera especie.",
+                    "Datos incompletos",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // Mutaciones
+        if (!ValidacionUtil.mutacionValida(
+                vista.isMutacionesActivadas(),
+                vista.getTipoMutacionSeleccionado())) {
+
+            JOptionPane.showMessageDialog(vista,
+                    "Debe seleccionar un tipo de mutación.",
+                    "Datos incompletos",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   
+    
+    
     
     
     
     public void generarEscenarioDesdeVista() {
-        //Deshabilitar botones:
-        vista.getBtnIniciar().setEnabled(false);
-        vista.getBtnPausar().setEnabled(false);
-
-        //Validaciones completas:
-        boolean valido = ValidacionUtil.validarSelecciones(
-        vista.getCmbEscenario().getSelectedItem(),
-        vista.isTerceraEspecieActiva(),
-        vista.getOpcionTerceraEspecie(),
-        vista.isMutacionesActivadas(),
-        vista.getTipoMutacionSeleccionado());
-        if(!valido){
-            JOptionPane.showMessageDialog(vista, 
-                    "Debe seleccionar alguna de las opciones:\n"
-                            + "Extención de especie\n"
-                            + "Escenario\n"
-                            + "Mutaciones", 
-                    "Datos incompletos",JOptionPane.WARNING_MESSAGE);
-        
+        //Validacion obligatoria de escenario base:
+        Object seleccionado = vista.getCmbEscenario().getSelectedItem();
+        String selec = seleccionado.toString().trim();
+        if (selec.isEmpty() || selec.equals("Seleccione un escenario")) {
+            JOptionPane.showMessageDialog(vista,
+                "Debe seleccionar un escenario para generar la simulación.",
+                "Datos incompletos",
+                JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
-        //Validamos escenario
+
+        // 2️⃣ Validar extensiones (tercera especie y mutaciones)
+        if (!validarExtensiones()) return;
+
+        // 3️⃣ Obtener datos del escenario
         String opcion = (String) vista.getCmbEscenario().getSelectedItem();
-        
-        int presas;
-        int depredadores;
+        int presas, depredadores;
 
         switch (opcion) {
-            case "Depredadores dominan" -> {
-                escenarioActual = "Depredadores dominan";
-                presas = 10;
-                depredadores = 30;
-            }
-            case "Presas dominan" -> {
-                escenarioActual = "Presas dominan";
-                presas = 35;
-                depredadores = 5;
-            }
-            default -> {
-                escenarioActual = "Equilibrado";
-                presas = 20;
-                depredadores = 20;
-            }
+            case "Depredadores dominan" -> { presas = 10; depredadores = 30; }
+            case "Presas dominan" -> { presas = 35; depredadores = 5; }
+            default -> { presas = 20; depredadores = 20; } // Equilibrado
         }
 
-        //Validamos extensiones: Tercera especie:
+        // 4️⃣ Obtener datos de la tercera especie
         int terceras = 0;
         String varianteTercera = null;
-
         if (vista.isTerceraEspecieActiva()) {
-            varianteTercera = vista.getOpcionTerceraEspecie();
+            varianteTercera = vista.getOpcionTerceraEspecie(); // Mutante, AliadaPresas, AliadaDepredadores
             terceras = 10;
         }
-        
-        
-        
-        mutacionesActivas = vista.isMutacionesActivadas();
-        tipoMutacionActual = null;
 
-        //Validaciones exitosas -> generamos ecosistema real:
+        // 5️⃣ Obtener datos de mutaciones
+        boolean mutacionesActivas = vista.isMutacionesActivadas();
+        String tipoMutacion = mutacionesActivas ? vista.getTipoMutacionSeleccionado() : null;
+
+        // 6️⃣ Reiniciar variables de simulación
         turnos = 0;
         faseDepredadores = true;
 
-        //Solo ingresamos aquí si NO hubieron errores:
-        servicio.generarEscenario(presas, depredadores, terceras, varianteTercera,
-                mutacionesActivas, tipoMutacionActual);
+        //Generar ecosistema:
+        servicio.generarEscenario(presas, depredadores, terceras, varianteTercera, mutacionesActivas, tipoMutacion);
 
-        //Actualizamos la tabla con datos reales:
+        //Actualizar tabla y guardar datos iniciales:
         actualizarTabla(vista.getTblEcosistema());
+        servicio.guardarDatosIniciales(presas, depredadores, maxTurnos, opcion);
+        servicio.guardarEstadoTurno(0, opcion);
 
-        servicio.guardarDatosIniciales(presas, depredadores, maxTurnos, escenarioActual);
-        servicio.guardarEstadoTurno(0, escenarioActual);
+        //Reseateamos los flags de control:
+        ecosistemaGenerado = true;
+        cambiosPendientes = false;
         
-        //Habilitamos botón iniciar:
+        //Habilitar botones:
         vista.getBtnIniciar().setEnabled(true);
         vista.getBtnPausar().setEnabled(true);
     }
@@ -284,11 +376,45 @@ public class EcosistemaController {
     
 
     public void iniciarSimulacion() {
+        if (!ecosistemaGenerado) {
+            JOptionPane.showMessageDialog(vista,
+                "Debe generar un ecosistema antes de iniciar la simulación.",
+                "Acción no permitida",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (cambiosPendientes) {
+            JOptionPane.showMessageDialog(vista,
+                "Ha modificado extensiones después de generar el ecosistema.\n" +
+                "Debe volver a presionar 'Generar ecosistema' antes de iniciar.",
+                "Cambios pendientes",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        //Bloqueamos los controles para que no se puedan cambiar durante la simulación:
+        vista.getCmbEscenario().setEnabled(false);
+        vista.getChkMutacionesGneticas().setEnabled(false);
+        vista.getRbtnTerceraEspecie().setEnabled(false);
+        
+        vista.getRbtnEspecieMutante().setEnabled(false);
+        vista.getRbtnAliadasPresas().setEnabled(false);
+        vista.getRbtnAliadosDepredadores().setEnabled(false);
+        vista.getCmbMutacion().setEnabled(false);
+        vista.getBtnGenerar().setEnabled(false);  // bloquear botón Generar
+        
+        
         if (!timer.isRunning()) {
-            timer.start();
+                timer.start();
         }
     }
 
+    
+    
+    
+    
+    
     public void pausarSimulacion() {
         if (timer.isRunning()) {
             timer.stop();
@@ -332,37 +458,38 @@ public class EcosistemaController {
         //Detenemos el timer si sigue activo:
         if (timer.isRunning()) {
             timer.stop();
-        
-            //Deshabilitamos los botones de control:
-            vista.getBtnIniciar().setEnabled(false);
-            vista.getBtnPausar().setEnabled(false);
-
-            //Cambiar texto del botón GENERAR ECOSISTEMA:
-            vista.getBtnGenerar().setText("Nuevo ecosistema");
-            vista.getBtnGenerar().setEnabled(true);
-
-            //Limpiar extension tercera especie:
-            vista.getRbtnTerceraEspecie().setSelected(false);
-
-            //Reiniciar selección del escenario:
-            if(vista.getCmbEscenario().getItemCount() > 0){
-                vista.getCmbEscenario().setSelectedIndex(0);
-            }
-
-            //Reiniciar selección de las mutaciones:
-            if(vista.getCmbMutacion().getItemCount() > 0){
-                vista.getCmbMutacion().setSelectedIndex(0);
-            }
-
-
-            //Evitamos presionar sin haber generado un nuevo ecosistema:
-            vista.getBtnIniciar().setEnabled(false);
-            vista.getBtnPausar().setEnabled(false);
         }
         
-    vista.habilitarTabReporte();
-    // Mostrar reporte
-    vista.mostrarReporte();
+        //Deshabilitamos los botones de control:
+        vista.getBtnIniciar().setEnabled(false);
+        vista.getBtnPausar().setEnabled(false);
+
+        //Cambiar texto del botón GENERAR ECOSISTEMA:
+        vista.getBtnGenerar().setText("Nuevo ecosistema");
+        vista.getBtnGenerar().setEnabled(true);
+            
+        //Evitamos presionar sin haber generado un nuevo ecosistema:
+        vista.getBtnIniciar().setEnabled(false);
+        vista.getBtnPausar().setEnabled(false);
+        
+        //Habilitamos controles:
+        vista.getCmbEscenario().setEnabled(true);
+        vista.getChkMutacionesGneticas().setEnabled(false); // se habilita solo al seleccionar escenario
+        vista.getRbtnTerceraEspecie().setEnabled(false);   // igual
+        vista.getRbtnEspecieMutante().setEnabled(false);
+        vista.getRbtnAliadasPresas().setEnabled(false);
+        vista.getRbtnAliadosDepredadores().setEnabled(false);
+        
+        //Reseteamos flags de control:
+        ecosistemaGenerado = false;
+        cambiosPendientes = false;
+        
+        vista.habilitarTabReporte();
+        // Mostrar reporte
+        vista.mostrarReporte();
+        
+        //Liampiamos campos:
+        vista.limpiarCampos();
     }
 
 }
