@@ -13,4 +13,7 @@ public class MovimientoService {
         // delega en la lógica del modelo
         ecosistema.moverSoloPresas();
     }
+
+    // No movemos aquí la tercera especie.
+    // Eso ya lo hace EcosistemaService.moverTerceraEspecie()
 }

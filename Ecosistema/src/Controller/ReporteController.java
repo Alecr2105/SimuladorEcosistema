@@ -24,15 +24,6 @@ public class ReporteController {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     public void dibujarGraficoPresasDepredadores(ReporteDatos datos) {
         try {
             DefaultPieDataset dataset = new DefaultPieDataset();
@@ -88,11 +79,6 @@ public class ReporteController {
         }
     }
 
-    
-    
-    
-    
-    
     
     
     
