@@ -10,6 +10,7 @@ import Model.Celda;
 import Model.Animal;
 import Model.Presa;
 import Model.Depredador;
+import Model.ReporteDatos;
 import Model.TerceraEspecie;
 import Utils.ValidacionUtil;
 import javax.swing.JOptionPane;
@@ -324,7 +325,7 @@ public class EcosistemaController {
         String selec = seleccionado.toString().trim();
         if (selec.isEmpty() || selec.equals("Seleccione un escenario")) {
             JOptionPane.showMessageDialog(vista,
-                "Debe seleccionar un escenario para generar la simulación.",
+                "Debe seleccionar un escenario antes de generar la simulación.",
                 "Datos incompletos",
                 JOptionPane.WARNING_MESSAGE);
             return;
@@ -496,5 +497,4 @@ public class EcosistemaController {
         //Liampiamos campos:
         vista.limpiarCampos();
     }
-
 }

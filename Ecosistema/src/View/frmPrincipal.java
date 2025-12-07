@@ -3,8 +3,8 @@ package View;
 import Business.ReporteService;
 import Controller.AuthController;
 import Controller.EcosistemaController;
+import Controller.ReporteController;
 import Model.ReporteDatos;
-import Utils.EmailService;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
@@ -13,19 +13,18 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.general.DefaultPieDataset;
 
 public class frmPrincipal extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmPrincipal.class.getName());
     private EcosistemaController ecosistemaController;
     private final ReporteService reporteService = new ReporteService();
-    private final EmailService emailService = new EmailService();
+    
+    //private final EmailService emailService = new EmailService();
     private boolean reporteDesbloqueado = false;
-
+    private ReporteController reporteController;
     
     
     
@@ -96,7 +95,13 @@ public class frmPrincipal extends javax.swing.JFrame {
                 mostrarLogin();
             }
         });
+        
         ecosistemaController = new EcosistemaController(this);
+        
+        reporteController = new ReporteController(
+            pnlGraficoPresasDepredadores,
+            pnlGraficoOcupacion
+        );
     }
 
     
@@ -510,12 +515,13 @@ public class frmPrincipal extends javax.swing.JFrame {
     public void mostrarRegistro() {
         ((java.awt.CardLayout) pnlContenedor.getLayout()).show(pnlContenedor, "card3");
     }
+    
 
     public void mostrarReporte() {
         tbpPrincipal.setSelectedComponent(pnlReporte);
 
         // 1) Cargar datos del archivo (nunca será null gracias a ReporteService)
-        ReporteDatos datos = null;
+        ReporteDatos datos;
         try {
             datos = reporteService.cargarDatosDesdeArchivo();
         } catch (Exception e) {
@@ -530,29 +536,27 @@ public class frmPrincipal extends javax.swing.JFrame {
         }
 
         // 2) Siempre llenar la UI con lo que tengamos en 'datos'
-        spnCantidadTurnos.setModel(new javax.swing.SpinnerNumberModel(datos.getTotalTurnos(), 0, 1000, 1));
+        spnCantidadTurnos.setModel(new javax.swing.SpinnerNumberModel(
+                datos.getTotalTurnos(), 0, 1000, 1));
         spnCantidadTurnos.setEnabled(false);
 
-        txtExtincion1.setText(datos.getTurnoExtincionPresas() == null
-                ? "Ninguno"
-                : datos.getTurnoExtincionPresas().toString());
+        txtExtincion1.setText(
+                datos.getTurnoExtincionPresas() == null
+                ? "Ninguno": datos.getTurnoExtincionPresas().toString());
 
-        txtExtincion2.setText(datos.getTurnoExtincionDepredadores() == null
-                ? "Ninguno"
-                : datos.getTurnoExtincionDepredadores().toString());
+        txtExtincion2.setText(
+                datos.getTurnoExtincionDepredadores() == null
+                ? "Ninguno": datos.getTurnoExtincionDepredadores().toString());
 
-        // Dibujar gráficos
-        dibujarGraficoPresasDepredadores(datos);
-        dibujarGraficoOcupacion(datos);
+        // 3) Dibujar gráficos
+        reporteController.dibujarGraficoPresasDepredadores(datos);
+        reporteController.dibujarGraficoOcupacion(datos);
 
         // 3) Intentar generar PDF y enviarlo por correo
         try {
             // Obtener los charts directamente desde los paneles
-            JFreeChart graficoPresas
-                    = ((ChartPanel) pnlGraficoPresasDepredadores.getComponent(0)).getChart();
-
-            JFreeChart graficoOcupacion
-                    = ((ChartPanel) pnlGraficoOcupacion.getComponent(0)).getChart();
+            JFreeChart graficoPresas = ((ChartPanel) pnlGraficoPresasDepredadores.getComponent(0)).getChart();
+            JFreeChart graficoOcupacion = ((ChartPanel) pnlGraficoOcupacion.getComponent(0)).getChart();
 
             // Generar PDF con ambos gráficos (Opción A: una página por gráfico)
             String rutaPdf = reporteService.generarPdfConGraficos(
@@ -562,7 +566,7 @@ public class frmPrincipal extends javax.swing.JFrame {
                     "reporte_simulacion.pdf"
             );
 
-            enviarPdfPorCorreo(rutaPdf);
+            reporteService.enviarPdfPorCorreo(rutaPdf);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
@@ -571,7 +575,6 @@ public class frmPrincipal extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-    
     
     
     
@@ -641,17 +644,16 @@ public class frmPrincipal extends javax.swing.JFrame {
         jlConsolaEventos = new javax.swing.JLabel();
         jlExtensiones = new javax.swing.JLabel();
         pnlReporte = new javax.swing.JPanel();
+        pnlGraficoPresasDepredadores = new javax.swing.JPanel();
+        pnlGraficoOcupacion = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         lblTurnos = new javax.swing.JLabel();
         spnCantidadTurnos = new javax.swing.JSpinner();
-        pnlGraficoPresasDepredadores = new javax.swing.JPanel();
-        lblGraficoPresasDepredadores = new javax.swing.JLabel();
         lblPrimeraExtincion = new javax.swing.JLabel();
         txtExtincion1 = new javax.swing.JTextField();
         lblSegundaExtincion = new javax.swing.JLabel();
         txtExtincion2 = new javax.swing.JTextField();
-        pnlGraficoOcupacion = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
 
         jCheckBox1.setText("jCheckBox1");
 
@@ -1044,8 +1046,6 @@ public class frmPrincipal extends javax.swing.JFrame {
         pnlReporte.setMaximumSize(new java.awt.Dimension(849, 490));
         pnlReporte.setMinimumSize(new java.awt.Dimension(849, 525));
 
-        lblTurnos.setText("Cantidad de turnos ejecutados:");
-
         pnlGraficoPresasDepredadores.setBackground(new java.awt.Color(204, 204, 204));
         pnlGraficoPresasDepredadores.setMinimumSize(new java.awt.Dimension(450, 240));
         pnlGraficoPresasDepredadores.setPreferredSize(new java.awt.Dimension(450, 240));
@@ -1058,25 +1058,8 @@ public class frmPrincipal extends javax.swing.JFrame {
         );
         pnlGraficoPresasDepredadoresLayout.setVerticalGroup(
             pnlGraficoPresasDepredadoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 251, Short.MAX_VALUE)
+            .addGap(0, 299, Short.MAX_VALUE)
         );
-
-        lblGraficoPresasDepredadores.setText("Gráfico De Presas y Depredadores");
-
-        lblPrimeraExtincion.setText("presas extintas en el turno:");
-
-        txtExtincion1.setEditable(false);
-        txtExtincion1.setEnabled(false);
-        txtExtincion1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtExtincion1ActionPerformed(evt);
-            }
-        });
-
-        lblSegundaExtincion.setText("Depredadores extintos en el turno:");
-
-        txtExtincion2.setEditable(false);
-        txtExtincion2.setEnabled(false);
 
         pnlGraficoOcupacion.setMinimumSize(new java.awt.Dimension(450, 240));
         pnlGraficoOcupacion.setPreferredSize(new java.awt.Dimension(450, 240));
@@ -1089,10 +1072,8 @@ public class frmPrincipal extends javax.swing.JFrame {
         );
         pnlGraficoOcupacionLayout.setVerticalGroup(
             pnlGraficoOcupacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 251, Short.MAX_VALUE)
+            .addGap(0, 299, Short.MAX_VALUE)
         );
-
-        jLabel2.setText("Gráfico de ocupación del ecosistema");
 
         jLabel1.setBackground(new java.awt.Color(0, 51, 102));
         jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
@@ -1101,75 +1082,99 @@ public class frmPrincipal extends javax.swing.JFrame {
         jLabel1.setText("Resultados de la Simulación");
         jLabel1.setOpaque(true);
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        lblTurnos.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        lblTurnos.setForeground(new java.awt.Color(0, 51, 102));
+        lblTurnos.setText("Cantidad de turnos ejecutados:");
+
+        lblPrimeraExtincion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        lblPrimeraExtincion.setForeground(new java.awt.Color(0, 51, 102));
+        lblPrimeraExtincion.setText("Presas extintas en el turno:");
+
+        txtExtincion1.setEditable(false);
+        txtExtincion1.setBackground(new java.awt.Color(255, 255, 255));
+        txtExtincion1.setEnabled(false);
+        txtExtincion1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtExtincion1ActionPerformed(evt);
+            }
+        });
+
+        lblSegundaExtincion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        lblSegundaExtincion.setForeground(new java.awt.Color(0, 51, 102));
+        lblSegundaExtincion.setText("Depredadores extintos en el turno:");
+
+        txtExtincion2.setEditable(false);
+        txtExtincion2.setBackground(new java.awt.Color(255, 255, 255));
+        txtExtincion2.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPrimeraExtincion, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spnCantidadTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtExtincion1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblSegundaExtincion, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtExtincion2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spnCantidadTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtExtincion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPrimeraExtincion))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSegundaExtincion)
+                    .addComponent(txtExtincion2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout pnlReporteLayout = new javax.swing.GroupLayout(pnlReporte);
         pnlReporte.setLayout(pnlReporteLayout);
         pnlReporteLayout.setHorizontalGroup(
             pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlReporteLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlReporteLayout.createSequentialGroup()
-                        .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlReporteLayout.createSequentialGroup()
-                                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(lblPrimeraExtincion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lblSegundaExtincion, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
-                                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(pnlReporteLayout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtExtincion2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtExtincion1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(pnlReporteLayout.createSequentialGroup()
-                                .addComponent(lblTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spnCantidadTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1060, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
-                                .addComponent(pnlGraficoPresasDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)
-                                .addComponent(pnlGraficoOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(39, 39, 39))))))
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblGraficoPresasDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(183, 183, 183)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(104, 104, 104))
+                .addContainerGap(186, Short.MAX_VALUE)
+                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlReporteLayout.createSequentialGroup()
+                        .addComponent(pnlGraficoPresasDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(pnlGraficoOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(161, 161, 161))
         );
         pnlReporteLayout.setVerticalGroup(
             pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlReporteLayout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(spnCantidadTurnos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblPrimeraExtincion)
-                    .addComponent(txtExtincion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblSegundaExtincion)
-                    .addComponent(txtExtincion2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                 .addGroup(pnlReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReporteLayout.createSequentialGroup()
-                        .addComponent(pnlGraficoOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
-                        .addGap(26, 26, 26))
-                    .addGroup(pnlReporteLayout.createSequentialGroup()
-                        .addComponent(pnlGraficoPresasDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblGraficoPresasDepredadores)
-                        .addContainerGap())))
+                    .addComponent(pnlGraficoPresasDepredadores, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlGraficoOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48))
         );
 
         tbpPrincipal.addTab("Reporte", pnlReporte);
@@ -1261,94 +1266,6 @@ public class frmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbMutacionActionPerformed
     
-
-  
-    
-    
-
-    
-
-    private void dibujarGraficoPresasDepredadores(ReporteDatos datos) {
-        try {
-            DefaultPieDataset dataset = new DefaultPieDataset();
-            dataset.setValue("Presas", (Number) datos.getPresasFinales());
-            dataset.setValue("Depredadores", (Number) datos.getDepredadoresFinales());
-
-            JFreeChart chart = ChartFactory.createPieChart(
-                    "Relación Presas vs Depredadores",
-                    dataset,
-                    true,
-                    true,
-                    false
-            );
-
-            ChartPanel panel = new ChartPanel(chart);
-
-            pnlGraficoPresasDepredadores.removeAll();
-            pnlGraficoPresasDepredadores.add(panel, BorderLayout.CENTER);
-            pnlGraficoPresasDepredadores.validate();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al dibujar gráfico Presas-Depredadores: " + ex.getMessage());
-        }
-    }
-
-    private void dibujarGraficoOcupacion(ReporteDatos datos) {
-        try {
-            DefaultPieDataset dataset = new DefaultPieDataset();
-
-            int ocupadas = datos.getCeldasOcupadas();
-            int libres = datos.getTotalCeldas() - ocupadas;
-
-            dataset.setValue("Ocupadas", (Number) ocupadas);
-            dataset.setValue("Libres", (Number) libres);
-
-            JFreeChart chart = ChartFactory.createPieChart(
-                    "Ocupación del Ecosistema",
-                    dataset,
-                    true,
-                    true,
-                    false
-            );
-
-            ChartPanel panel = new ChartPanel(chart);
-
-            pnlGraficoOcupacion.removeAll();
-            pnlGraficoOcupacion.add(panel, BorderLayout.CENTER);
-            pnlGraficoOcupacion.validate();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al dibujar gráfico de ocupación: " + ex.getMessage());
-        }
-    }
-
-    private void enviarPdfPorCorreo(String rutaPdf) {
-        if (AuthController.usuarioActual == null) {
-            return;
-        }
-
-        String destinatario = AuthController.usuarioActual.getCorreo();
-
-        if (destinatario == null || destinatario.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "El usuario no tiene correo registrado.");
-            return;
-        }
-
-        try {
-            emailService.enviarCorreoConAdjunto(
-                    destinatario,
-                    "Reporte de Ecosistema",
-                    "Adjunto el reporte de la simulación.",
-                    rutaPdf
-            );
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al enviar correo: " + ex.getMessage());
-        }
-    }
-    
-    
     
     
     
@@ -1372,7 +1289,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser dtRegFecha;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel jlConsolaEventos;
@@ -1387,7 +1304,6 @@ public class frmPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jlSeleccionarEscenario;
     private javax.swing.JLabel jlSimuladorEcosistemas;
     private javax.swing.JLabel jlTieneCuenta;
-    private javax.swing.JLabel lblGraficoPresasDepredadores;
     private javax.swing.JLabel lblPrimeraExtincion;
     private javax.swing.JLabel lblSegundaExtincion;
     private javax.swing.JLabel lblTurnos;

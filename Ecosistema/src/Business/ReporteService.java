@@ -1,6 +1,8 @@
 package Business;
-
+import Controller.AuthController;
 import Model.ReporteDatos;
+import Utils.EmailService;
+
 //Librería itext
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.jfree.chart.JFreeChart;
 
 public class ReporteService {
@@ -24,11 +27,12 @@ public class ReporteService {
     private static final Logger LOGGER = Logger.getLogger(ReporteService.class.getName());
     private static final String ARCHIVO_ESTADOS = "estado_turnos.txt";
     private static final int TAM_MATRIZ = 10;
+    
+    private final EmailService emailService = new EmailService();
 
-    /**
-     * Método de conveniencia: siempre devuelve un ReporteDatos, aunque haya
-     * problemas leyendo el archivo.
-     */
+   
+    //Método de conveniencia: siempre devuelve un ReporteDatos, aunque haya
+    //problemas leyendo el archivo.
     public ReporteDatos cargarDatosDesdeArchivo() {
         return cargarDatosDesdeArchivo(ARCHIVO_ESTADOS);
     }
@@ -92,9 +96,8 @@ public class ReporteService {
         return reporteActual;
     }
 
-    /**
-     * Crea un reporte vacío (todo en 0) para evitar romper la UI.
-     */
+     //Crea un reporte vacío (todo en 0) para evitar romper la UI.
+   
     private ReporteDatos crearReporteVacio() {
         ReporteDatos datos = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
         datos.setTotalTurnos(0);
@@ -107,9 +110,9 @@ public class ReporteService {
         return datos;
     }
 
-    /**
-     * Procesa un bloque de 10 filas (un turno) y actualiza el reporte.
-     */
+    
+    //Procesa un bloque de 10 filas (un turno) y actualiza el reporte.
+    
     private boolean procesarTurno(int turno, List<String> filas, ReporteDatos reporte) {
         if (filas.size() != TAM_MATRIZ) {
             LOGGER.log(Level.WARNING,
@@ -173,10 +176,10 @@ public class ReporteService {
         return true;
     }
 
-    /**
-     * Intenta extraer el número de turno de la cabecera, pero nunca lanza
-     * excepción.
-     */
+    
+    //Intenta extraer el número de turno de la cabecera, pero nunca lanza
+    //excepción.
+
     private Integer parsearTurnoSeguro(String linea) {
         try {
             int inicio = linea.indexOf("TURNO=");
@@ -190,9 +193,17 @@ public class ReporteService {
         return null;
     }
 
-    /**
-     * Genera un PDF a partir de los datos ya cargados.
-     */
+
+
+
+
+
+
+
+
+    
+    //Genera un PDF a partir de los datos ya cargados.
+
     public String generarPdfConGraficos(ReporteDatos datos,
                                    JFreeChart graficoPresas,
                                    JFreeChart graficoOcupacion,
@@ -258,6 +269,34 @@ public class ReporteService {
 
         document.close();
         return nombreArchivo;
+    }
+    
+    
+    
+    public void enviarPdfPorCorreo(String rutaPdf) {
+        if (AuthController.usuarioActual == null) {
+            return;
+        }
+
+        String destinatario = AuthController.usuarioActual.getCorreo();
+
+        if (destinatario == null || destinatario.isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                    "El usuario no tiene correo registrado.");
+            return;
+        }
+
+        try {
+            emailService.enviarCorreoConAdjunto(
+                    destinatario,
+                    "Reporte de Ecosistema",
+                    "Adjunto el reporte de la simulación.",
+                    rutaPdf
+            );
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Error al enviar correo: " + ex.getMessage());
+        }
     }
 }
 
