@@ -65,6 +65,7 @@ public class EcosistemaController {
         vista.getBtnPausar().setEnabled(false);
         
         //Deshabilitar extensiones al inicio:
+        vista.getCmbMutacion().setEnabled(false);
         vista.getChkMutacionesGneticas().setEnabled(false);
         vista.getRbtnTerceraEspecie().setEnabled(false);
         
@@ -75,6 +76,10 @@ public class EcosistemaController {
         cambiosPendientes = false;    //Todos los cambios
         
         //Marcamos cambios en extensiones:
+        vista.getChkMutacionesGneticas().addActionListener(e -> {
+            boolean activo = vista.getChkMutacionesGneticas().isSelected();
+            vista.getCmbMutacion().setEnabled(activo);
+        });
         vista.getChkMutacionesGneticas().addActionListener(e -> cambiosPendientes = true);
         vista.getRbtnTerceraEspecie().addActionListener(e -> cambiosPendientes = true);
         vista.getRbtnEspecieMutante().addActionListener(e -> cambiosPendientes = true);
@@ -244,8 +249,7 @@ public class EcosistemaController {
                 vista.getRbtnAliadasPresas().setEnabled(false);
                 vista.getRbtnAliadosDepredadores().setEnabled(false);
             } else {
-                // Habilitar extensiones
-                vista.getCmbMutacion().setEnabled(true);
+                // Habilitar extensiones:
                 vista.getChkMutacionesGneticas().setEnabled(true);
                 vista.getRbtnTerceraEspecie().setEnabled(true);
                 
@@ -474,6 +478,7 @@ public class EcosistemaController {
         
         //Habilitamos controles:
         vista.getCmbEscenario().setEnabled(true);
+        vista.getCmbMutacion().setEnabled(false);
         vista.getChkMutacionesGneticas().setEnabled(false); // se habilita solo al seleccionar escenario
         vista.getRbtnTerceraEspecie().setEnabled(false);   // igual
         vista.getRbtnEspecieMutante().setEnabled(false);
