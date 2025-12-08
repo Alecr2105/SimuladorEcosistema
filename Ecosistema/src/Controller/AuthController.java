@@ -18,11 +18,14 @@ public class AuthController {
     public static boolean sesionIniciada = false;
     public static Usuario usuarioActual = null;
 
+    
+    
+    
     public AuthController(frmPrincipal view, AuthService service) {
         this.view = view;
         this.service = service;
 
-        // Cambiar pantallas de incio sesión y registro:
+        //Cambiamos a pantallas de incio sesión y registro:
         this.view.getLblNoCuenta().addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 view.mostrarRegistro();
@@ -34,7 +37,7 @@ public class AuthController {
             }
         });
 
-        // Botones de autenticación:
+        //Botones de autenticación:
         this.view.getBtnRegistrar().addActionListener(e -> registrarUsuario());
         this.view.getBtnIngresar().addActionListener(e -> iniciarSesion());
         this.view.getBtnCerrarSesion().addActionListener(e -> cerrarSesion());
@@ -43,8 +46,8 @@ public class AuthController {
     
     
     
-    
-    // VALIDACIÓN DE REGISTRO
+    //MÉTODOS PRINCIPALES:
+    //***********************************************************************************************
     private boolean validarRegistro() {
         //Cédula:
         if (!ValidacionUtil.cedulaValida(view.getTxtRegCedula().getText())) {
@@ -103,9 +106,8 @@ public class AuthController {
     
     
     
-    //Operacion de autenticación:
-    //***********************************************************************************
-    //Registrar:
+    //OperacionES de autenticación:
+    //*****************************
     private void registrarUsuario() {
         if (!validarRegistro()) return;
 
@@ -135,9 +137,6 @@ public class AuthController {
     
     
     
-    
-    
-    
     //Iniciar Sesión:
     private void iniciarSesion() {
 
@@ -156,7 +155,6 @@ public class AuthController {
         }
         
         try {
-
             boolean ok = service.iniciarSesion(Integer.parseInt(ced), pwd);
 
             if (ok) {
@@ -177,10 +175,6 @@ public class AuthController {
     
     
     
-    
-    
-    
-    
     //Cerrar Sesión:
     private void cerrarSesion(){
         int opcion = JOptionPane.showConfirmDialog(view,
@@ -190,7 +184,7 @@ public class AuthController {
                 JOptionPane.WARNING_MESSAGE);
         
         if(opcion != JOptionPane.YES_OPTION){
-            return; //Usuario canceló
+            return; //Usuario canceló el cierrer de sesión
         }
         
         //Detener simulación en proceso:

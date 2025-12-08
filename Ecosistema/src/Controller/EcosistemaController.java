@@ -2,24 +2,28 @@ package Controller;
 
 import Business.EcosistemaService;
 import View.frmPrincipal;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
+
 import Model.Celda;
 import Model.Animal;
 import Model.Presa;
 import Model.Depredador;
 import Model.TerceraEspecie;
+
 import Utils.ValidacionUtil;
 import javax.swing.JOptionPane;
 
 public class EcosistemaController {
-
     private final EcosistemaService servicio;
     private final frmPrincipal vista;
+    
+    //Imagenes ecosistema:
     private final ImageIcon iconVacio;
     private final ImageIcon iconPresa;
     private final ImageIcon iconDepredador;
@@ -42,8 +46,8 @@ public class EcosistemaController {
     private String tipoMutacionActual = null;
     
     //Flags de control y verificacion de cambios de extensión:
-    private boolean ecosistemaGenerado = false;   // Marca si se generó un ecosistema
-    private boolean cambiosPendientes = false;    // Marca si se cambiaron extensiones después de generar
+    private boolean ecosistemaGenerado = false;//Marcamos si se generó un ecosistema
+    private boolean cambiosPendientes = false;//Marcamos si se cambiaron extensiones después de generar
     
     
 
@@ -75,8 +79,8 @@ public class EcosistemaController {
         //Listener rbtnSeleccionarEscenario:
         configurarListenerEscenario();
         
-        ecosistemaGenerado = false;   //Marca si se generó un ecosistema
-        cambiosPendientes = false;    //Todos los cambios
+        ecosistemaGenerado = false;//Marcamos si se generó un ecosistema
+        cambiosPendientes = false;//Todos los cambios
         
         //Marcamos cambios en extensiones:
         vista.getChkMutacionesGneticas().addActionListener(e -> {
@@ -93,16 +97,14 @@ public class EcosistemaController {
     
     
     
-    
-    
-    
+    //MÉTODOS PRINCIPALES:
+    //*****************************************************************************
     private void configurarTabla(JTable tabla) {
         DefaultTableModel model = new DefaultTableModel(10, 10) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return ImageIcon.class;
             }
-
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -112,14 +114,6 @@ public class EcosistemaController {
         tabla.setRowHeight(45);
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
     
     private void configurarTimer() {
         timer = new Timer(DELAY, e -> {
@@ -133,7 +127,7 @@ public class EcosistemaController {
                 servicio.moverTerceraEspecie();
                 servicio.aplicarFinDeTurnoBasico();
 
-                turnos++; // turno completo (depredadores + presas + tercera)
+                turnos++; //Turno completo (depredadores + presas + tercera)
 
                 actualizarTabla(vista.getTblEcosistema());
                 for (String ev : servicio.consumirEventosTurno()) {
@@ -149,15 +143,13 @@ public class EcosistemaController {
                 log("Turno " + turnos + " completado - Presas: " + presas
                         + ", Depredadores: " + depredadores
                         + ", Tercera especie: " + terceras);
-
-
-                // Verificar máximo de turnos
+                //Verificamos máximo de turnos:
                 if (turnos >= maxTurnos) {
                     log("Simulación detenida: se alcanzó el máximo de turnos (" + maxTurnos + ").");
                     finalizar = true;
                 }
 
-                // Opcional: log de extinciones
+                //Log de extinciones:
                 if (presas == 0) {
                     log(">> Las presas se extinguieron en el turno " + turnos);
                 }
@@ -169,21 +161,18 @@ public class EcosistemaController {
                     finalizar = true;
                 }
                 
-                // Guardar estado del turno con todos los mensajes registrados
+                //Guardamos el estado del turno con todos los mensajes registrados:
                 servicio.guardarEstadoTurno(turnos, escenarioActual, new ArrayList<>(registrosTurno));
                 registrosTurno.clear();
-
                 if (finalizar) {
                     finalizarSimulacion();
                     return;
                 }
-
                 faseDepredadores = true;
             }
         });
     }
 
-    
     
     
     
@@ -200,7 +189,7 @@ public class EcosistemaController {
 
                 Animal a = celdas[i][j].getAnimal();
 
-                // 🟢 PRESA (normal o venenosa)
+                //PRESA (normal o venenosa):
                 if (a instanceof Presa p) {
                     if (p.isVenenosa()
                             && iconPresaVenenosa != null
@@ -210,7 +199,7 @@ public class EcosistemaController {
                         tabla.setValueAt(iconPresa, i, j);
                     }
 
-                    // 🔴 DEPREDADOR (normal o furioso)
+                    //DEPREDADOR (normal o furioso):
                 } else if (a instanceof Depredador d) {
                     if (d.isFurioso()
                             && iconDepredadorFurioso != null
@@ -220,7 +209,7 @@ public class EcosistemaController {
                         tabla.setValueAt(iconDepredador, i, j);
                     }
 
-                    // 🟣 TERCERA ESPECIE (mutante / aliada presas / aliada depredadores)
+                    //TERCERA ESPECIE (mutante / aliada presas / aliada depredadores):
                 } else if (a instanceof TerceraEspecie te) {
                     switch (te.getVariante()) {
                         case "Mutante" ->
@@ -234,14 +223,12 @@ public class EcosistemaController {
                     }
 
                 } else {
-                    // por si en el futuro aparece otro tipo
                     tabla.setValueAt(iconVacio, i, j);
                 }
             }
         }
     }
 
-    
     
     
     
@@ -252,7 +239,7 @@ public class EcosistemaController {
             if (seleccionado == null || seleccionado.toString().trim().isEmpty() ||
                 seleccionado.toString().equals("Seleccione un escenario")) {
 
-                // Deshabilitar extensiones
+                //Deshabilitamos extensiones:
                 vista.getCmbMutacion().setEnabled(false);
                 vista.getChkMutacionesGneticas().setEnabled(false);
                 vista.getRbtnTerceraEspecie().setEnabled(false);
@@ -261,7 +248,7 @@ public class EcosistemaController {
                 vista.getRbtnAliadasPresas().setEnabled(false);
                 vista.getRbtnAliadosDepredadores().setEnabled(false);
             } else {
-                // Habilitar extensiones:
+                //Habilitamos extensiones:
                 vista.getChkMutacionesGneticas().setEnabled(true);
                 vista.getRbtnTerceraEspecie().setEnabled(true);
                 
@@ -273,20 +260,10 @@ public class EcosistemaController {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
    
     
     private boolean validarExtensiones() {
-        // Tercera especie
+        //Tercera especie
         if (!ValidacionUtil.terceraEspecieValida(
                 vista.isTerceraEspecieActiva(),
                 vista.getRbtnEspecieMutante().isSelected(),
@@ -299,8 +276,7 @@ public class EcosistemaController {
                     JOptionPane.WARNING_MESSAGE);
             return false;
         }
-
-        // Mutaciones
+        //Mutaciones:
         if (!ValidacionUtil.mutacionValida(
                 vista.isMutacionesActivadas(),
                 vista.getTipoMutacionSeleccionado())) {
@@ -311,22 +287,8 @@ public class EcosistemaController {
                     JOptionPane.WARNING_MESSAGE);
             return false;
         }
-
         return true;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-   
-    
-    
     
     
     
@@ -342,40 +304,40 @@ public class EcosistemaController {
             return;
         }
 
-        // 2️⃣ Validar extensiones (tercera especie y mutaciones)
+        //Validamos extensiones (mutaciones + tercera especie):
         if (!validarExtensiones()) return;
 
-        // 3️⃣ Obtener datos del escenario
+        //Validamos escenario base:
         String opcion = (String) vista.getCmbEscenario().getSelectedItem();
         int presas, depredadores;
 
         switch (opcion) {
             case "Depredadores dominan" -> { presas = 10; depredadores = 30; }
             case "Presas dominan" -> { presas = 35; depredadores = 5; }
-            default -> { presas = 20; depredadores = 20; } // Equilibrado
+            default -> { presas = 20; depredadores = 20; } //Equilibrado
         }
 
-        // 4️⃣ Obtener datos de la tercera especie
+        //Obtenemos datos de la tercera especie:
         int terceras = 0;
         String varianteTercera = null;
         if (vista.isTerceraEspecieActiva()) {
-            varianteTercera = vista.getOpcionTerceraEspecie(); // Mutante, AliadaPresas, AliadaDepredadores
+            varianteTercera = vista.getOpcionTerceraEspecie(); //Mutante, AliadaPresas, AliadaDepredadores
             terceras = 10;
         }
 
-        // 5️⃣ Obtener datos de mutaciones
+        //Obtenemos datos de mutaciones:
         boolean mutacionesActivas = vista.isMutacionesActivadas();
         String tipoMutacion = mutacionesActivas ? vista.getTipoMutacionSeleccionado() : null;
 
-        // 6️⃣ Reiniciar variables de simulación
+        //Reiniciamos variables de simulación:
         turnos = 0;
         faseDepredadores = true;
         registrosTurno.clear();
 
-        //Generar ecosistema:
+        //Generamos ecosistema:
         servicio.generarEscenario(presas, depredadores, terceras, varianteTercera, mutacionesActivas, tipoMutacion);
 
-        //Actualizar tabla y guardar datos iniciales:
+        //Actualizamos tabla y guardamos datos iniciales:
         actualizarTabla(vista.getTblEcosistema());
         servicio.guardarDatosIniciales(presas, depredadores, maxTurnos, opcion);
         servicio.guardarEstadoTurno(0, opcion, new ArrayList<>(registrosTurno));
@@ -389,8 +351,7 @@ public class EcosistemaController {
         vista.getBtnPausar().setEnabled(true);
     }
     
-    
-    
+   
 
     public void iniciarSimulacion() {
         if (!ecosistemaGenerado) {
@@ -400,7 +361,6 @@ public class EcosistemaController {
                 JOptionPane.WARNING_MESSAGE);
             return;
         }
-
         if (cambiosPendientes) {
             JOptionPane.showMessageDialog(vista,
                 "Ha modificado extensiones después de generar el ecosistema.\n" +
@@ -419,66 +379,13 @@ public class EcosistemaController {
         vista.getRbtnAliadasPresas().setEnabled(false);
         vista.getRbtnAliadosDepredadores().setEnabled(false);
         vista.getCmbMutacion().setEnabled(false);
-        vista.getBtnGenerar().setEnabled(false);  // bloquear botón Generar
-        
+        vista.getBtnGenerar().setEnabled(false);  //bloquear botón Generar
         
         if (!timer.isRunning()) {
                 timer.start();
         }
     }
 
-    
-    
-    
-    
-    
-    public void pausarSimulacion() {
-        if (timer.isRunning()) {
-            timer.stop();
-        }
-    }
-    
-    
-    
-
-    public void siguienteTurnoManual() {
-        servicio.moverDepredadores();
-        actualizarTabla(vista.getTblEcosistema());
-
-        servicio.moverPresas();
-        servicio.moverTerceraEspecie();   // 👈 NUEVO
-        servicio.aplicarFinDeTurnoBasico();
-        actualizarTabla(vista.getTblEcosistema());
-
-        turnos++;
-        int presas = servicio.getTotalPresas();
-        int depredadores = servicio.getTotalDepredadores();
-        int terceras = servicio.getTotalTerceraEspecie();
-
-        log("Turno " + turnos + " completado - Presas: " + presas
-                + ", Depredadores: " + depredadores
-                + ", Tercera especie: " + terceras);
-        servicio.guardarEstadoTurno(turnos, escenarioActual, new ArrayList<>(registrosTurno));
-        registrosTurno.clear();
-    }
-
-    
-    
-    
-    
-    public int getTurnos() {
-        return turnos;
-    }
-
-    private void log(String mensaje) {
-        vista.getTxtMovimientos().append(mensaje + "\n");
-        registrosTurno.add(mensaje);
-    }
-   
-    
-    
-    
-    
     
     private void finalizarSimulacion() {
         //Detenemos el timer si sigue activo:
@@ -501,8 +408,8 @@ public class EcosistemaController {
         //Habilitamos controles:
         vista.getCmbEscenario().setEnabled(true);
         vista.getCmbMutacion().setEnabled(false);
-        vista.getChkMutacionesGneticas().setEnabled(false); // se habilita solo al seleccionar escenario
-        vista.getRbtnTerceraEspecie().setEnabled(false);   // igual
+        vista.getChkMutacionesGneticas().setEnabled(false); //Se habilita solo al seleccionar escenario
+        vista.getRbtnTerceraEspecie().setEnabled(false);
         vista.getRbtnEspecieMutante().setEnabled(false);
         vista.getRbtnAliadasPresas().setEnabled(false);
         vista.getRbtnAliadosDepredadores().setEnabled(false);
@@ -517,5 +424,45 @@ public class EcosistemaController {
         
         //Liampiamos campos:
         vista.limpiarCampos();
+    }
+    
+    
+    
+    
+    
+    public void pausarSimulacion() {
+        if (timer.isRunning()) {
+            timer.stop();
+        }
+    }
+
+    public void siguienteTurnoManual() {
+        servicio.moverDepredadores();
+        actualizarTabla(vista.getTblEcosistema());
+
+        servicio.moverPresas();
+        servicio.moverTerceraEspecie();
+        servicio.aplicarFinDeTurnoBasico();
+        actualizarTabla(vista.getTblEcosistema());
+
+        turnos++;
+        int presas = servicio.getTotalPresas();
+        int depredadores = servicio.getTotalDepredadores();
+        int terceras = servicio.getTotalTerceraEspecie();
+
+        log("Turno " + turnos + " completado - Presas: " + presas
+                + ", Depredadores: " + depredadores
+                + ", Tercera especie: " + terceras);
+        servicio.guardarEstadoTurno(turnos, escenarioActual, new ArrayList<>(registrosTurno));
+        registrosTurno.clear();
+    }
+    
+    public int getTurnos() {
+        return turnos;
+    }
+
+    private void log(String mensaje) {
+        vista.getTxtMovimientos().append(mensaje + "\n");
+        registrosTurno.add(mensaje);
     }
 }

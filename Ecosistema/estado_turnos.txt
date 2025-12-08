@@ -1,56 +1,81 @@
----TURNO=0;ESCENARIO=Equilibrado---
+---TURNO=0;ESCENARIO=Depredadores dominan---
 Sin eventos registrados en este turno.
 
 ---TURNO=1;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 1
-Depredador comió una presa en (0,5).
-Depredador comió una presa en (1,4).
-Depredador comió una presa en (1,9).
-Depredador comió una presa en (3,5).
-Depredador comió una presa en (4,9).
-Depredador comió una presa en (6,6).
+Depredador comió una presa en (0,7).
+Depredador comió una presa en (2,6).
+Depredador comió una presa en (5,6).
 Depredador comió una presa en (6,1).
-Depredador comió una presa en (8,4).
-Depredador comió una presa en (7,5).
-Depredador comió una presa en (6,9).
-Depredador comió una presa en (8,2).
-Depredador comió una presa en (9,8).
-Turno 1 completado - Presas: 8, Depredadores: 16, Tercera especie: 10
+Depredador comió una presa en (6,4).
+Depredador comió una presa en (9,2).
+Turno 1 completado - Presas: 3, Depredadores: 23, Tercera especie: 10
 
 ---TURNO=2;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 2
-Depredador comió una presa en (2,8).
-Depredador comió una presa en (2,1).
-Depredador comió una presa en (8,5).
-Turno 2 completado - Presas: 8, Depredadores: 12, Tercera especie: 10
+Depredador comió una presa en (3,5).
+Turno 2 completado - Presas: 4, Depredadores: 18, Tercera especie: 10
 
 ---TURNO=3;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 3
-Depredador comió una presa en (8,8).
-Turno 3 completado - Presas: 6, Depredadores: 4, Tercera especie: 10
+Depredador comió una presa en (9,3).
+Turno 3 completado - Presas: 3, Depredadores: 4, Tercera especie: 10
 
 ---TURNO=4;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 4
-Turno 4 completado - Presas: 10, Depredadores: 2, Tercera especie: 10
+Depredador comió una presa en (8,2).
+Turno 4 completado - Presas: 4, Depredadores: 2, Tercera especie: 10
 
 ---TURNO=5;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 5
-Depredador comió una presa en (8,7).
-Turno 5 completado - Presas: 8, Depredadores: 2, Tercera especie: 10
+Depredador comió una presa en (8,3).
+Turno 5 completado - Presas: 2, Depredadores: 1, Tercera especie: 10
 
 ---TURNO=6;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 6
-Turno 6 completado - Presas: 12, Depredadores: 3, Tercera especie: 10
+Turno 6 completado - Presas: 4, Depredadores: 2, Tercera especie: 10
 
 ---TURNO=7;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 7
-Turno 7 completado - Presas: 10, Depredadores: 1, Tercera especie: 10
+Turno 7 completado - Presas: 3, Depredadores: 1, Tercera especie: 10
 
 ---TURNO=8;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 8
-Turno 8 completado - Presas: 16, Depredadores: 1, Tercera especie: 10
+Turno 8 completado - Presas: 6, Depredadores: 1, Tercera especie: 10
 
 ---TURNO=9;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 9
-Turno 9 completado - Presas: 15, Depredadores: 1, Tercera especie: 10
+Turno 9 completado - Presas: 5, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 9
+
+---TURNO=10;ESCENARIO=Equilibrado---
+Movimiento de depredadores en turno 10
+Turno 10 completado - Presas: 10, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 10
+
+---TURNO=11;ESCENARIO=Equilibrado---
+Movimiento de depredadores en turno 11
+Turno 11 completado - Presas: 8, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 11
+
+---TURNO=12;ESCENARIO=Equilibrado---
+Movimiento de depredadores en turno 12
+Turno 12 completado - Presas: 12, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 12
+
+---TURNO=13;ESCENARIO=Equilibrado---
+Movimiento de depredadores en turno 13
+Turno 13 completado - Presas: 8, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 13
+
+---TURNO=14;ESCENARIO=Equilibrado---
+Movimiento de depredadores en turno 14
+Turno 14 completado - Presas: 12, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 14
+
+---TURNO=15;ESCENARIO=Equilibrado---
+Movimiento de depredadores en turno 15
+Turno 15 completado - Presas: 10, Depredadores: 0, Tercera especie: 10
+Simulación detenida: se alcanzó el máximo de turnos (15).
+>> Los depredadores se extinguieron en el turno 15
 

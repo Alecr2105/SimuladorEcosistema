@@ -2,7 +2,8 @@
 package Controller;
 
 import Model.ReporteDatos;
-import java.awt.BasicStroke;
+
+//Librerías/elementos gráficos:
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -48,7 +49,7 @@ public class ReporteController {
             //Colores de las secciones:
             plot.setSectionPaint("Presas", java.awt.Color.BLUE);       
             plot.setSectionPaint("Depredadores", java.awt.Color.LIGHT_GRAY);   
-            plot.setBackgroundPaint(java.awt.Color.WHITE);//Fondo del gráfico
+            plot.setBackgroundPaint(java.awt.Color.WHITE);
             
             //Borde del gráfico:
             plot.setOutlineVisible(true);
@@ -61,11 +62,11 @@ public class ReporteController {
             plot.setSimpleLabels(true);
             plot.setLabelFont(new Font("Arial", Font.BOLD, 12));
             plot.setLabelPaint(Color.BLACK);
-            plot.setLabelBackgroundPaint(Color.WHITE);  // fondo blanco para que resalte
+            plot.setLabelBackgroundPaint(Color.WHITE);
             plot.setLabelOutlinePaint(Color.DARK_GRAY);
             plot.setLabelShadowPaint(Color.LIGHT_GRAY);
             plot.setLabelGenerator(new org.jfree.chart.labels.StandardPieSectionLabelGenerator(
-                "{0}: {1}" // muestra: Nombre: Valor
+                "{0}: {1}" //Muestra: Nombre: Valor
             ));
             
             ChartPanel panel = new ChartPanel(chart);
@@ -116,14 +117,14 @@ public class ReporteController {
             plot.setBackgroundPaint(java.awt.Color.WHITE);
 
             
-            //Borde del gráfico
+            //Borde del gráfico:
             plot.setOutlineVisible(true);
             plot.setOutlinePaint(Color.DARK_GRAY);
 
-            // Separación de secciones (explode)
+            //Separación de secciones (explode):
             plot.setExplodePercent("Ocupadas", 0.10);  // separar sección ocupadas si quieres destacar
 
-            // Etiquetas más claras
+            //Etiquetas:
             plot.setSimpleLabels(true);  // coloca etiquetas fuera de la sección
             plot.setLabelFont(new Font("Arial", Font.BOLD, 12));
             plot.setLabelPaint(Color.BLACK);
