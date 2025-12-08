@@ -215,9 +215,14 @@ public class ReporteService {
         }
 
         if (presas == null || depredadores == null || terceras == null) {
-            LOGGER.log(Level.WARNING,
-                    "El turno {0} no contiene un resumen de conteos. Se ignorará este bloque.",
-                    turno);
+            if (turno == 0) {
+                LOGGER.log(Level.FINE,
+                        "El turno 0 no contiene un resumen de conteos. Se omitirá sin marcarlo como error.");
+            } else {
+                LOGGER.log(Level.WARNING,
+                        "El turno {0} no contiene un resumen de conteos. Se ignorará este bloque.",
+                        turno);
+            }
             return false;
         }
 
