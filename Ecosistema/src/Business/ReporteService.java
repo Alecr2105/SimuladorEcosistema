@@ -3,7 +3,6 @@ package Business;
 import Controller.AuthController;
 import Model.ReporteDatos;
 
-
 //Librería itext:
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -30,13 +29,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReporteService {
+
     private static final Logger LOGGER = Logger.getLogger(ReporteService.class.getName());
     private static final String ARCHIVO_ESTADOS = "estado_turnos.txt";
     private static final int TAM_MATRIZ = 10;
-    
+
     private final EmailService emailService = new EmailService();
 
-   
     //Método que siempre devuelve un ReporteDatos, aunque haya
     //problemas leyendo el archivo.
     public ReporteDatos cargarDatosDesdeArchivo() {
@@ -99,9 +98,6 @@ public class ReporteService {
         return reporteActual;
     }
 
-    
-    
-    
     //Creamos un reporte vacío (todo en 0) esto para evitar romper la UI.
     private ReporteDatos crearReporteVacio() {
         ReporteDatos datos = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
@@ -114,7 +110,7 @@ public class ReporteService {
         datos.setTurnoExtincionDepredadores(null);
         return datos;
     }
-    
+
     private boolean procesarTurno(int turno, List<String> lineas, ReporteDatos reporte) {
         if (lineas == null || lineas.isEmpty()) {
             return false;
@@ -129,7 +125,6 @@ public class ReporteService {
         return procesarTurnoEventos(turno, lineas, reporte);
     }
 
-    
     //Procesa un bloque de 10 filas (un turno) y actualizamos el reporte.
     private boolean procesarTurnoMatriz(int turno, List<String> filas, ReporteDatos reporte) {
         if (filas.size() != TAM_MATRIZ) {
@@ -147,12 +142,25 @@ public class ReporteService {
                         new Object[]{indiceFila + 1, turno, TAM_MATRIZ});
                 return false;
             }
+
+            boolean formatoConColumnas = true;
+            for (String fila : filas) {
+                if (!fila.contains(";")) {
+                    formatoConColumnas = false;
+                    break;
+                }
+            }
+
+            if (!formatoConColumnas) {
+                return false;
+            }
+
             for (String v : valores) {
                 int val;
                 try {
                     val = Integer.parseInt(v.trim());
                 } catch (NumberFormatException ex) {
-                    
+
                     return false;
                 }
                 if (val == 1) {
@@ -182,9 +190,7 @@ public class ReporteService {
         }
         return true;
     }
-    
-    
-    
+
     private boolean procesarTurnoEventos(int turno, List<String> eventos, ReporteDatos reporte) {
         Pattern resumenPattern = Pattern.compile(
                 "Turno\\s+(\\d+)\\s+completado\\s+-\\s+Presas:\\s*(\\d+),\\s*Depredadores:\\s*(\\d+),\\s*Tercera especie:\\s*(\\d+)");
@@ -242,13 +248,6 @@ public class ReporteService {
         }
         return true;
     }
-    
-    
-    
-    
-    
-    
-    
 
     private Integer parsearTurnoSeguro(String linea) {
         try {
@@ -263,23 +262,13 @@ public class ReporteService {
         return null;
     }
 
-
-
-
-
-
-
-
-
-    
     //Genera un PDF a partir de los datos ya cargados.
-
     public String generarPdfConGraficos(ReporteDatos datos,
-                                   JFreeChart graficoPresas,
-                                   JFreeChart graficoOcupacion,
-                                   String nombreArchivo)
-        throws DocumentException, IOException {
-        
+            JFreeChart graficoPresas,
+            JFreeChart graficoOcupacion,
+            String nombreArchivo)
+            throws DocumentException, IOException {
+
         Document document = new Document(PageSize.A4.rotate());
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(nombreArchivo));
         document.open();
@@ -340,9 +329,7 @@ public class ReporteService {
         document.close();
         return nombreArchivo;
     }
-    
-    
-    
+
     public void enviarPdfPorCorreo(String rutaPdf) {
         if (AuthController.usuarioActual == null) {
             return;
@@ -369,9 +356,3 @@ public class ReporteService {
         }
     }
 }
-
-
-
-
-
-

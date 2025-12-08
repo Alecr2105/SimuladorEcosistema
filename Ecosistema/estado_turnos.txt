@@ -3,148 +3,176 @@ Sin eventos registrados en este turno.
 
 ---TURNO=1;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 1
-Depredador comió una presa en (1,4).
-Depredador comió una presa en (1,2).
-Depredador comió una presa en (3,1).
-Depredador comió una presa en (5,6).
-Depredador comió una presa en (4,5).
-Depredador comió una presa en (6,8).
-Depredador comió una presa en (8,7).
-Depredador comió una presa en (8,5).
-Depredador comió una presa en (9,1).
-Depredador comió una presa en (9,5).
-Especie Mutante eliminó a un depredador en (1,2).
-Especie Mutante eliminó a un depredador en (4,8).
-Especie Mutante eliminó una presa en (7,3).
-Especie Mutante eliminó a un depredador en (8,7).
-Especie Mutante eliminó a un depredador en (9,1).
-Especie Mutante eliminó a un depredador en (9,5).
-Turno 1 completado - Presas: 9, Depredadores: 15, Tercera especie: 10
+Depredador comió una presa en (0,8).
+Depredador murió al comer una presa venenosa en (0,1).
+Depredador comió una presa en (1,9).
+Depredador comió una presa en (2,2).
+Depredador comió una presa en (2,4).
+Depredador comió una presa en (5,1).
+Depredador comió una presa en (5,5).
+Depredador comió una presa en (7,2).
+Depredador comió una presa en (9,3).
+Depredador murió al comer una presa venenosa en (8,6).
+Depredador murió al comer una presa venenosa en (9,9).
+Depredador comió una presa en (8,4).
+Especie Mutante eliminó a un depredador en (0,4).
+Especie Mutante eliminó a un depredador en (2,4).
+Especie Mutante eliminó a un depredador en (2,9).
+Especie Mutante eliminó a un depredador en (5,5).
+Especie Mutante eliminó a un depredador en (7,2).
+Especie Mutante eliminó a un depredador en (7,5).
+Especie Mutante eliminó a un depredador en (9,3).
+Turno 1 completado - Presas: 8, Depredadores: 10, Tercera especie: 10
 
 ---TURNO=2;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 2
-Depredador comió una presa en (2,8).
-Depredador comió una presa en (5,1).
-Depredador comió una presa en (9,8).
-Especie Mutante eliminó a un depredador en (1,4).
-Especie Mutante eliminó a un depredador en (3,8).
-Especie Mutante eliminó a un depredador en (8,5).
-Presa se reprodujo en (0,5).
-Presa se reprodujo en (1,9).
-Presa se reprodujo en (1,7).
-Presa se reprodujo en (2,0).
-Presa se reprodujo en (3,4).
-Presa se reprodujo en (7,1).
-Turno 2 completado - Presas: 12, Depredadores: 12, Tercera especie: 10
+Depredador murió al comer una presa venenosa en (1,6).
+Depredador comió una presa en (4,0).
+Depredador comió una presa en (7,0).
+Especie Mutante eliminó a un depredador en (1,9).
+Especie Mutante eliminó a un depredador en (2,2).
+Especie Mutante eliminó a un depredador en (3,7).
+Especie Mutante eliminó una presa en (4,5).
+Presa se reprodujo en (1,6).
+Presa se reprodujo en (2,7).
+Presa se reprodujo en (4,8).
+Presa se reprodujo en (6,5).
+Turno 2 completado - Presas: 8, Depredadores: 6, Tercera especie: 10
 
 ---TURNO=3;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 3
-Depredador comió una presa en (0,5).
-Depredador comió una presa en (1,8).
-Depredador comió una presa en (3,0).
-Depredador comió una presa en (4,4).
-Depredador comió una presa en (6,1).
-Especie Mutante eliminó una presa en (2,1).
-Especie Mutante eliminó a un depredador en (6,8).
-Especie Mutante eliminó a un depredador en (7,6).
-Turno 3 completado - Presas: 6, Depredadores: 13, Tercera especie: 10
+Especie Mutante eliminó una presa en (3,8).
+Especie Mutante eliminó a un depredador en (8,4).
+Turno 3 completado - Presas: 7, Depredadores: 4, Tercera especie: 10
 
 ---TURNO=4;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 4
-Depredador comió una presa en (1,6).
-Depredador comió una presa en (0,8).
-Depredador comió una presa en (2,7).
-Especie Mutante eliminó a un depredador en (1,6).
-Especie Mutante eliminó a un depredador en (2,7).
-Especie Mutante eliminó a un depredador en (5,4).
-Especie Mutante eliminó a un depredador en (6,1).
-Presa se reprodujo en (2,9).
-Presa se reprodujo en (3,5).
-Presa se reprodujo en (7,2).
-Turno 4 completado - Presas: 6, Depredadores: 9, Tercera especie: 10
+Especie Mutante eliminó una presa en (0,5).
+Especie Mutante eliminó a un depredador en (7,1).
+Presa se reprodujo en (1,7).
+Presa se reprodujo en (1,9).
+Presa se reprodujo en (2,7).
+Presa se reprodujo en (4,6).
+Presa se reprodujo en (6,5).
+Presa se reprodujo en (5,9).
+Turno 4 completado - Presas: 12, Depredadores: 1, Tercera especie: 10
 
 ---TURNO=5;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 5
-Depredador comió una presa en (3,4).
-Depredador comió una presa en (7,2).
-Especie Mutante eliminó una presa en (2,8).
-Turno 5 completado - Presas: 3, Depredadores: 8, Tercera especie: 10
+Especie Mutante eliminó una presa en (0,6).
+Especie Mutante eliminó una presa en (1,8).
+Especie Mutante eliminó una presa en (4,6).
+Especie Mutante eliminó una presa en (5,8).
+Turno 5 completado - Presas: 8, Depredadores: 1, Tercera especie: 10
 
 ---TURNO=6;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 6
-Depredador comió una presa en (0,9).
-Especie Mutante eliminó a un depredador en (3,4).
-Especie Mutante eliminó a un depredador en (9,7).
-Presa se reprodujo en (2,3).
-Presa se reprodujo en (8,3).
-Turno 6 completado - Presas: 4, Depredadores: 7, Tercera especie: 10
+Especie Mutante eliminó una presa en (1,6).
+Especie Mutante eliminó una presa en (4,8).
+Especie Mutante eliminó una presa en (7,6).
+Presa se reprodujo en (2,5).
+Presa se reprodujo en (1,9).
+Presa se reprodujo en (3,6).
+Presa se reprodujo en (7,9).
+Presa se reprodujo en (7,4).
+Turno 6 completado - Presas: 10, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 6
 
 ---TURNO=7;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 7
-Depredador comió una presa en (8,2).
-Especie Mutante eliminó a un depredador en (1,9).
-Especie Mutante eliminó a un depredador en (6,2).
-Especie Mutante eliminó a un depredador en (8,2).
-Especie Mutante eliminó a un depredador en (9,8).
-Turno 7 completado - Presas: 3, Depredadores: 3, Tercera especie: 10
+Especie Mutante eliminó una presa en (0,9).
+Especie Mutante eliminó una presa en (2,4).
+Especie Mutante eliminó una presa en (4,6).
+Especie Mutante eliminó una presa en (8,4).
+Turno 7 completado - Presas: 6, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 7
 
 ---TURNO=8;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 8
-Especie Mutante eliminó una presa en (1,3).
-Especie Mutante eliminó a un depredador en (0,9).
-Especie Mutante eliminó una presa en (9,2).
-Presa se reprodujo en (0,2).
-Turno 8 completado - Presas: 2, Depredadores: 2, Tercera especie: 10
+Especie Mutante eliminó una presa en (6,7).
+Presa se reprodujo en (1,8).
+Presa se reprodujo en (3,6).
+Presa se reprodujo en (2,8).
+Presa se reprodujo en (7,4).
+Presa se reprodujo en (8,7).
+Turno 8 completado - Presas: 10, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 8
 
 ---TURNO=9;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 9
-Turno 9 completado - Presas: 2, Depredadores: 2, Tercera especie: 10
+Especie Mutante eliminó una presa en (0,7).
+Especie Mutante eliminó una presa en (1,7).
+Especie Mutante eliminó una presa en (2,6).
+Especie Mutante eliminó una presa en (3,8).
+Especie Mutante eliminó una presa en (3,5).
+Turno 9 completado - Presas: 5, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 9
 
 ---TURNO=10;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 10
-Especie Mutante eliminó a un depredador en (7,9).
-Presa se reprodujo en (1,0).
-Presa se reprodujo en (1,1).
-Turno 10 completado - Presas: 4, Depredadores: 1, Tercera especie: 10
+Presa se reprodujo en (1,9).
+Presa se reprodujo en (5,5).
+Presa se reprodujo en (6,3).
+Presa se reprodujo en (6,7).
+Presa se reprodujo en (7,9).
+Turno 10 completado - Presas: 10, Depredadores: 0, Tercera especie: 10
+>> Los depredadores se extinguieron en el turno 10
 
 ---TURNO=11;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 11
-Especie Mutante eliminó a un depredador en (3,0).
-Turno 11 completado - Presas: 4, Depredadores: 0, Tercera especie: 10
+Especie Mutante eliminó una presa en (0,8).
+Turno 11 completado - Presas: 9, Depredadores: 0, Tercera especie: 10
 >> Los depredadores se extinguieron en el turno 11
 
 ---TURNO=12;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 12
-Presa se reprodujo en (0,2).
-Presa se reprodujo en (1,0).
-Presa se reprodujo en (1,3).
-Presa se reprodujo en (3,1).
-Turno 12 completado - Presas: 8, Depredadores: 0, Tercera especie: 10
+Especie Mutante eliminó una presa en (2,8).
+Presa se reprodujo en (4,8).
+Presa se reprodujo en (5,3).
+Presa se reprodujo en (5,6).
+Presa se reprodujo en (5,4).
+Presa se reprodujo en (5,9).
+Presa se reprodujo en (7,1).
+Presa se reprodujo en (6,3).
+Presa se reprodujo en (8,7).
+Turno 12 completado - Presas: 16, Depredadores: 0, Tercera especie: 10
 >> Los depredadores se extinguieron en el turno 12
 
 ---TURNO=13;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 13
-Especie Mutante eliminó una presa en (1,0).
-Especie Mutante eliminó una presa en (2,3).
-Turno 13 completado - Presas: 6, Depredadores: 0, Tercera especie: 10
+Especie Mutante eliminó una presa en (4,3).
+Especie Mutante eliminó una presa en (6,1).
+Especie Mutante eliminó una presa en (8,6).
+Turno 13 completado - Presas: 13, Depredadores: 0, Tercera especie: 10
 >> Los depredadores se extinguieron en el turno 13
 
 ---TURNO=14;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 14
-Especie Mutante eliminó una presa en (1,1).
-Especie Mutante eliminó una presa en (3,3).
-Presa se reprodujo en (0,1).
-Presa se reprodujo en (0,3).
-Presa se reprodujo en (2,2).
-Presa se reprodujo en (3,1).
-Turno 14 completado - Presas: 8, Depredadores: 0, Tercera especie: 10
+Especie Mutante eliminó una presa en (3,9).
+Presa se reprodujo en (4,7).
+Presa se reprodujo en (4,8).
+Presa se reprodujo en (4,6).
+Presa se reprodujo en (4,0).
+Presa se reprodujo en (5,3).
+Presa se reprodujo en (5,4).
+Presa se reprodujo en (6,7).
+Presa se reprodujo en (6,8).
+Presa se reprodujo en (6,0).
+Presa se reprodujo en (8,3).
+Presa se reprodujo en (7,8).
+Presa se reprodujo en (9,4).
+Turno 14 completado - Presas: 24, Depredadores: 0, Tercera especie: 10
 >> Los depredadores se extinguieron en el turno 14
 
 ---TURNO=15;ESCENARIO=Equilibrado---
 Movimiento de depredadores en turno 15
-Especie Mutante eliminó una presa en (0,1).
-Especie Mutante eliminó una presa en (3,2).
-Turno 15 completado - Presas: 6, Depredadores: 0, Tercera especie: 10
+Especie Mutante eliminó una presa en (3,6).
+Especie Mutante eliminó una presa en (3,7).
+Especie Mutante eliminó una presa en (3,0).
+Especie Mutante eliminó una presa en (4,9).
+Especie Mutante eliminó una presa en (6,1).
+Especie Mutante eliminó una presa en (6,6).
+Turno 15 completado - Presas: 18, Depredadores: 0, Tercera especie: 10
 Simulación detenida: se alcanzó el máximo de turnos (15).
 >> Los depredadores se extinguieron en el turno 15
 
