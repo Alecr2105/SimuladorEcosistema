@@ -240,11 +240,15 @@ public class Ecosistema {
                     int nc = destinoAtaque[1];
 
                     // se mueve a la celda del objetivo y lo elimina
+                    Animal objetivo = matriz[nf][nc].getAnimal();
+
                     matriz[nf][nc].setAnimal(especie3);
                     matriz[f][c].setAnimal(null);
 
                     especie3.setFila(nf);
                     especie3.setColumna(nc);
+                    
+                    registrarEventoTerceraEspecie(variante, objetivo, nf, nc);
 
                     continue;
                 }
@@ -359,7 +363,6 @@ public class Ecosistema {
         return presas;
     }
 
-    
     //Fin de turnos: Alimentación + reproducción
     public void aplicarFinDeTurnoBasico(Ecosistema ecosistema) {
         List<Presa> presasReproductoras = new ArrayList<>();
@@ -426,6 +429,8 @@ public class Ecosistema {
 
         Presa hijo = new Presa(nf, nc);
         matriz[nf][nc].setAnimal(hijo);
+        
+        eventosTurno.add("Presa se reprodujo en (" + nf + "," + nc + ").");
 
         madre.reiniciarReproduccion();
     }
@@ -523,6 +528,23 @@ public class Ecosistema {
         List<String> copia = new ArrayList<>(eventosTurno);
         eventosTurno.clear();
         return copia;
+    }
+    
+    private void registrarEventoTerceraEspecie(String variante, Animal objetivo, int nf, int nc) {
+        if (objetivo instanceof Depredador) {
+            eventosTurno.add("Especie " + variante + " eliminó a un depredador en (" + nf + "," + nc + ").");
+            return;
+        }
+
+        if (objetivo instanceof Presa) {
+            String textoVariante = switch (variante) {
+                case "AliadaDepredadores" -> "aliada de depredadores";
+                case "AliadaPresas" -> "aliada de presas";
+                default -> variante;
+            };
+
+            eventosTurno.add("Especie " + textoVariante + " eliminó una presa en (" + nf + "," + nc + ").");
+        }
     }
 
 }
