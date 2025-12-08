@@ -4,6 +4,7 @@ import Model.Ecosistema;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 
 
@@ -67,7 +68,8 @@ public class EcosistemaDAO {
     // Guarda el estado de un turno (se va acumulando en el archivo)
     public void guardarEstadoTurno(Ecosistema ecosistema,
                                    int numeroTurno,
-                                   String escenario) {
+                                   String escenario,
+                                   List<String> eventosTurno) {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_ESTADOS, true))) {
 
@@ -75,17 +77,14 @@ public class EcosistemaDAO {
             bw.write("---TURNO=" + numeroTurno + ";ESCENARIO=" + escenario + "---");
             bw.newLine();
 
-            int[][] m = ecosistema.getMatrizNumerica();
-            for (int i = 0; i < m.length; i++) {
-                StringBuilder fila = new StringBuilder();
-                for (int j = 0; j < m[i].length; j++) {
-                    fila.append(m[i][j]);
-                    if (j < m[i].length - 1) {
-                        fila.append(";");
-                    }
-                }
-                bw.write(fila.toString());
+            if (eventosTurno == null || eventosTurno.isEmpty()) {
+                bw.write("Sin eventos registrados en este turno.");
                 bw.newLine();
+            } else {
+                for (String evento : eventosTurno) {
+                    bw.write(evento);
+                    bw.newLine();
+                }
             }
 
             bw.newLine(); // línea en blanco entre turnos

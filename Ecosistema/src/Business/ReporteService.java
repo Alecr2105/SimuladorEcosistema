@@ -26,6 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.jfree.chart.JFreeChart;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReporteService {
     private static final Logger LOGGER = Logger.getLogger(ReporteService.class.getName());
@@ -55,36 +57,36 @@ public class ReporteService {
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
             Integer turnoEnProceso = null;
-            List<String> filas = new ArrayList<>();
+            List<String> lineasTurno = new ArrayList<>();
 
             while ((linea = br.readLine()) != null) {
                 if (linea.startsWith("---TURNO=")) {
                     //Cerramos turno anterior si estaba en proceso:
-                    if (turnoEnProceso != null && !filas.isEmpty()) {
-                        seLeyeronTurnos |= procesarTurno(turnoEnProceso, filas, reporteActual);
+                    if (turnoEnProceso != null && !lineasTurno.isEmpty()) {
+                        seLeyeronTurnos |= procesarTurno(turnoEnProceso, lineasTurno, reporteActual);
                     }
 
                     turnoEnProceso = parsearTurnoSeguro(linea);
-                    filas = new ArrayList<>();
+                    lineasTurno = new ArrayList<>();
 
                     //Si es un nuevo ciclo (turno 0) reiniciamos acomuladores:
                     if (turnoEnProceso != null && turnoEnProceso == 0) {
                         reporteActual = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
                     }
                 } else if (linea.trim().isEmpty()) {
-                    if (turnoEnProceso != null && !filas.isEmpty()) {
-                        seLeyeronTurnos |= procesarTurno(turnoEnProceso, filas, reporteActual);
+                    if (turnoEnProceso != null && !lineasTurno.isEmpty()) {
+                        seLeyeronTurnos |= procesarTurno(turnoEnProceso, lineasTurno, reporteActual);
                         turnoEnProceso = null;
-                        filas = new ArrayList<>();
+                        lineasTurno = new ArrayList<>();
                     }
                 } else {
-                    filas.add(linea.trim());
+                    lineasTurno.add(linea.trim());
                 }
             }
 
             //Procesamos el último turno pendiente:
-            if (turnoEnProceso != null && !filas.isEmpty()) {
-                seLeyeronTurnos |= procesarTurno(turnoEnProceso, filas, reporteActual);
+            if (turnoEnProceso != null && !lineasTurno.isEmpty()) {
+                seLeyeronTurnos |= procesarTurno(turnoEnProceso, lineasTurno, reporteActual);
             }
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Error leyendo el archivo de estados: " + ruta, e);
@@ -112,14 +114,25 @@ public class ReporteService {
         datos.setTurnoExtincionDepredadores(null);
         return datos;
     }
+    
+    private boolean procesarTurno(int turno, List<String> lineas, ReporteDatos reporte) {
+        if (lineas == null || lineas.isEmpty()) {
+            return false;
+        }
+
+        // Intentar formato antiguo basado en matrices
+        if (procesarTurnoMatriz(turno, lineas, reporte)) {
+            return true;
+        }
+
+        // Intentar formato de log de movimientos
+        return procesarTurnoEventos(turno, lineas, reporte);
+    }
 
     
     //Procesa un bloque de 10 filas (un turno) y actualizamos el reporte.
-    private boolean procesarTurno(int turno, List<String> filas, ReporteDatos reporte) {
+    private boolean procesarTurnoMatriz(int turno, List<String> filas, ReporteDatos reporte) {
         if (filas.size() != TAM_MATRIZ) {
-            LOGGER.log(Level.WARNING,
-                    "El turno {0} no contiene {1} filas completas. Se ignorará este bloque.",
-                    new Object[]{turno, TAM_MATRIZ});
             return false;
         }
         int presas = 0;
@@ -139,9 +152,7 @@ public class ReporteService {
                 try {
                     val = Integer.parseInt(v.trim());
                 } catch (NumberFormatException ex) {
-                    LOGGER.log(Level.WARNING,
-                            "Valor no numérico en el turno {0}: ''{1}''. Se ignorará este bloque.",
-                            new Object[]{turno, v});
+                    
                     return false;
                 }
                 if (val == 1) {
@@ -171,6 +182,68 @@ public class ReporteService {
         }
         return true;
     }
+    
+    
+    
+    private boolean procesarTurnoEventos(int turno, List<String> eventos, ReporteDatos reporte) {
+        Pattern resumenPattern = Pattern.compile(
+                "Turno\\s+(\\d+)\\s+completado\\s+-\\s+Presas:\\s*(\\d+),\\s*Depredadores:\\s*(\\d+),\\s*Tercera especie:\\s*(\\d+)");
+
+        Integer presas = null;
+        Integer depredadores = null;
+        Integer terceras = null;
+
+        for (String linea : eventos) {
+            Matcher matcher = resumenPattern.matcher(linea);
+            if (matcher.find()) {
+                try {
+                    int turnoLinea = Integer.parseInt(matcher.group(1));
+                    presas = Integer.parseInt(matcher.group(2));
+                    depredadores = Integer.parseInt(matcher.group(3));
+                    terceras = Integer.parseInt(matcher.group(4));
+
+                    if (turnoLinea != turno) {
+                        LOGGER.log(Level.FINE,
+                                "El resumen indica el turno {0} pero el encabezado es {1}. Se usará el encabezado.",
+                                new Object[]{turnoLinea, turno});
+                    }
+                } catch (NumberFormatException ex) {
+                    LOGGER.log(Level.WARNING, "No se pudieron parsear los conteos del turno {0}.", turno);
+                }
+                break;
+            }
+        }
+
+        if (presas == null || depredadores == null || terceras == null) {
+            LOGGER.log(Level.WARNING,
+                    "El turno {0} no contiene un resumen de conteos. Se ignorará este bloque.",
+                    turno);
+            return false;
+        }
+
+        int ocupadas = presas + depredadores + terceras;
+
+        reporte.setTotalTurnos(Math.max(reporte.getTotalTurnos(), turno));
+        reporte.setPresasFinales(presas);
+        reporte.setDepredadoresFinales(depredadores);
+        reporte.setTerceraEspecieFinal(terceras);
+        reporte.setCeldasOcupadas(ocupadas);
+
+        if (reporte.getTurnoExtincionPresas() == null && presas == 0) {
+            reporte.setTurnoExtincionPresas(turno);
+        }
+        if (reporte.getTurnoExtincionDepredadores() == null && depredadores == 0) {
+            reporte.setTurnoExtincionDepredadores(turno);
+        }
+        return true;
+    }
+    
+    
+    
+    
+    
+    
+    
 
     private Integer parsearTurnoSeguro(String linea) {
         try {

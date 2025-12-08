@@ -2,6 +2,7 @@ package Business;
 
 import Data.EcosistemaDAO;
 import Model.Ecosistema;
+import java.util.List;
 
 public class EcosistemaService {
     private Ecosistema ecosistema;
@@ -74,9 +75,10 @@ public class EcosistemaService {
     }
 
     
-    public void guardarEstadoTurno(int numeroTurno, String escenario) {
-        ecosistemaDAO.guardarEstadoTurno(ecosistema, numeroTurno, escenario);
+    public void guardarEstadoTurno(int numeroTurno, String escenario, List<String> eventosTurno) {
+        ecosistemaDAO.guardarEstadoTurno(ecosistema, numeroTurno, escenario, eventosTurno);
     }
+
 
     
     

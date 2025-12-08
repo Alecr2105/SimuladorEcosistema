@@ -2,6 +2,8 @@ package Controller;
 
 import Business.EcosistemaService;
 import View.frmPrincipal;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.Timer;
@@ -31,6 +33,7 @@ public class EcosistemaController {
     private int turnos;
     private final int DELAY = 600;
     private boolean faseDepredadores = true;
+    private final List<String> registrosTurno = new ArrayList<>();
 
     private String escenarioActual = "Equilibrado";
     private int maxTurnos = 15;
@@ -140,18 +143,18 @@ public class EcosistemaController {
                 int presas = servicio.getTotalPresas();
                 int depredadores = servicio.getTotalDepredadores();
                 int terceras = servicio.getTotalTerceraEspecie();
+                
+                boolean finalizar = false;
 
                 log("Turno " + turnos + " completado - Presas: " + presas
                         + ", Depredadores: " + depredadores
                         + ", Tercera especie: " + terceras);
 
-                // Guardar estado del turno
-                servicio.guardarEstadoTurno(turnos, escenarioActual);
 
                 // Verificar máximo de turnos
                 if (turnos >= maxTurnos) {
                     log("Simulación detenida: se alcanzó el máximo de turnos (" + maxTurnos + ").");
-                    finalizarSimulacion();
+                    finalizar = true;
                 }
 
                 // Opcional: log de extinciones
@@ -163,7 +166,16 @@ public class EcosistemaController {
                 }
                 if (presas == 0 && depredadores == 0 && terceras == 0) {
                     log(">> Todas las especies se extinguieron. Fin de la simulación.");
+                    finalizar = true;
+                }
+                
+                // Guardar estado del turno con todos los mensajes registrados
+                servicio.guardarEstadoTurno(turnos, escenarioActual, new ArrayList<>(registrosTurno));
+                registrosTurno.clear();
+
+                if (finalizar) {
                     finalizarSimulacion();
+                    return;
                 }
 
                 faseDepredadores = true;
@@ -358,6 +370,7 @@ public class EcosistemaController {
         // 6️⃣ Reiniciar variables de simulación
         turnos = 0;
         faseDepredadores = true;
+        registrosTurno.clear();
 
         //Generar ecosistema:
         servicio.generarEscenario(presas, depredadores, terceras, varianteTercera, mutacionesActivas, tipoMutacion);
@@ -365,7 +378,7 @@ public class EcosistemaController {
         //Actualizar tabla y guardar datos iniciales:
         actualizarTabla(vista.getTblEcosistema());
         servicio.guardarDatosIniciales(presas, depredadores, maxTurnos, opcion);
-        servicio.guardarEstadoTurno(0, opcion);
+        servicio.guardarEstadoTurno(0, opcion, new ArrayList<>(registrosTurno));
 
         //Reseateamos los flags de control:
         ecosistemaGenerado = true;
@@ -438,7 +451,15 @@ public class EcosistemaController {
         actualizarTabla(vista.getTblEcosistema());
 
         turnos++;
-        servicio.guardarEstadoTurno(turnos, escenarioActual);
+        int presas = servicio.getTotalPresas();
+        int depredadores = servicio.getTotalDepredadores();
+        int terceras = servicio.getTotalTerceraEspecie();
+
+        log("Turno " + turnos + " completado - Presas: " + presas
+                + ", Depredadores: " + depredadores
+                + ", Tercera especie: " + terceras);
+        servicio.guardarEstadoTurno(turnos, escenarioActual, new ArrayList<>(registrosTurno));
+        registrosTurno.clear();
     }
 
     
@@ -451,6 +472,7 @@ public class EcosistemaController {
 
     private void log(String mensaje) {
         vista.getTxtMovimientos().append(mensaje + "\n");
+        registrosTurno.add(mensaje);
     }
    
     
