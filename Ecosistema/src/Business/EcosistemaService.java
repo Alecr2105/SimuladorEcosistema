@@ -43,7 +43,7 @@ public class EcosistemaService {
     }
     
     
-    //Moviemientos (delegamos desde ecosistem.java):
+    //Movimientos (delegamos desde ecosistem.java):
     public void moverDepredadores() {
         ecosistema.moverSoloDepredadores(ecosistema);
     }

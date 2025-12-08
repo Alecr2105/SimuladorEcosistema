@@ -14,13 +14,13 @@ import java.text.ParseException;
 import java.util.*;
 import javax.swing.JOptionPane;
 
-//CRUD and access to file users.txt. 
+//CRUD y acceso al archivo usuarios.txt: 
 public class UsuarioDAO {
     private final String ARCHIVO = "usuarios.txt";
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     
    
-    //Convert user to line:
+    //Convertir de usuario a linea:
     private String toFileString(Usuario u){
         return u.getCedula() + ";" +
                u.getNombre() + ";" +
@@ -29,7 +29,9 @@ public class UsuarioDAO {
                u.getContrasena() + ";" +
                u.getCorreo();
     }
-    //Convert line to user:
+    
+    
+    //Convertir de linea a usuario:
     private Usuario fromFileString(String line){
         try{
             String[] p = line.split(";");
@@ -50,15 +52,13 @@ public class UsuarioDAO {
     
     
     
-    
-    
-    //Load all users to the file:
+    //Cargar usuarios en el archivo:
     public List<Usuario> cargarUsuarios(){
         List<Usuario> list = new ArrayList<>();
         
         File file = new File(ARCHIVO);
         if(!file.exists()){
-            return list; //If the list is empy
+            return list; //Si la lista está vacía
         }
         try(BufferedReader br = new BufferedReader(new FileReader(ARCHIVO))){
             String line;
@@ -79,7 +79,7 @@ public class UsuarioDAO {
     
     
     
-    //Save a new user to the file:
+    //Guardar nuevo usuario:
     public void guardarUsuario(Usuario u){
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO, true))) {
             bw.write(toFileString(u));
@@ -93,9 +93,7 @@ public class UsuarioDAO {
     
     
     
-    
-    
-    //Search for user by ID number:
+    //Buscar usuario por cédula:
     public Usuario buscarPorCedula(int cedula){
         for(Usuario u : cargarUsuarios()){
             if(u.getCedula() == cedula){

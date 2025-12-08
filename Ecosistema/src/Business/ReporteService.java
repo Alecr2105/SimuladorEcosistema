@@ -125,7 +125,7 @@ public class ReporteService {
         return procesarTurnoEventos(turno, lineas, reporte);
     }
 
-    //Procesa un bloque de 10 filas (un turno) y actualizamos el reporte.
+    //Procesamos un bloque de 10 filas (un turno) y actualizamos el reporte.
     private boolean procesarTurnoMatriz(int turno, List<String> filas, ReporteDatos reporte) {
         if (filas.size() != TAM_MATRIZ) {
             return false;
@@ -142,7 +142,6 @@ public class ReporteService {
                         new Object[]{indiceFila + 1, turno, TAM_MATRIZ});
                 return false;
             }
-
             boolean formatoConColumnas = true;
             for (String fila : filas) {
                 if (!fila.contains(";")) {
@@ -150,11 +149,9 @@ public class ReporteService {
                     break;
                 }
             }
-
             if (!formatoConColumnas) {
                 return false;
             }
-
             for (String v : valores) {
                 int val;
                 try {
@@ -175,7 +172,8 @@ public class ReporteService {
                 }
             }
         }
-        // Actualizar datos del reporte con el último turno leído
+        
+        //Actualizamos datos del reporte con el último turno leído:
         reporte.setTotalTurnos(Math.max(reporte.getTotalTurnos(), turno));
         reporte.setPresasFinales(presas);
         reporte.setDepredadoresFinales(depredadores);
@@ -194,7 +192,6 @@ public class ReporteService {
     private boolean procesarTurnoEventos(int turno, List<String> eventos, ReporteDatos reporte) {
         Pattern resumenPattern = Pattern.compile(
                 "Turno\\s+(\\d+)\\s+completado\\s+-\\s+Presas:\\s*(\\d+),\\s*Depredadores:\\s*(\\d+),\\s*Tercera especie:\\s*(\\d+)");
-
         Integer presas = null;
         Integer depredadores = null;
         Integer terceras = null;
@@ -219,7 +216,6 @@ public class ReporteService {
                 break;
             }
         }
-
         if (presas == null || depredadores == null || terceras == null) {
             if (turno == 0) {
                 LOGGER.log(Level.FINE,
@@ -231,7 +227,6 @@ public class ReporteService {
             }
             return false;
         }
-
         int ocupadas = presas + depredadores + terceras;
 
         reporte.setTotalTurnos(Math.max(reporte.getTotalTurnos(), turno));
@@ -249,6 +244,8 @@ public class ReporteService {
         return true;
     }
 
+    
+    
     private Integer parsearTurnoSeguro(String linea) {
         try {
             int inicio = linea.indexOf("TURNO=");
@@ -262,7 +259,10 @@ public class ReporteService {
         return null;
     }
 
-    //Genera un PDF a partir de los datos ya cargados.
+    
+    
+   
+    //Generamos un PDF a partir de los datos ya cargados.
     public String generarPdfConGraficos(ReporteDatos datos,
             JFreeChart graficoPresas,
             JFreeChart graficoOcupacion,
@@ -273,7 +273,7 @@ public class ReporteService {
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(nombreArchivo));
         document.open();
 
-        // ======= PÁGINA 1 – RESUMEN NUMÉRICO =======
+        //PÁGINA 1: Reporte general
         document.add(new Paragraph("Reporte de simulación",
                 new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 24, com.lowagie.text.Font.BOLD)));
 
@@ -294,19 +294,19 @@ public class ReporteService {
         String mensajeExtincionDepredadores = datos.getTurnoExtincionDepredadores() == null
                 ? "No se extinguieron los depredadores"
                 : "Se extinguieron los depredadores en el turno " + datos.getTurnoExtincionDepredadores();
-
         document.add(new Paragraph(mensajeExtincionPresas));
         document.add(new Paragraph(mensajeExtincionDepredadores));
 
         document.newPage();
 
-        // ======= PÁGINA 2 – GRÁFICOS =======
+        
+        //PÁGINA 2: Gráficos:
         document.add(new Paragraph("Gráficos de la simulación",
                 new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 24, com.lowagie.text.Font.BOLD)));
 
-        document.add(new Paragraph("\n")); // espacio
+        document.add(new Paragraph("\n"));
 
-        // Gráfico de presas vs depredadores
+        //Gráfico de presas vs depredadores:
         java.awt.Image img1 = graficoPresas.createBufferedImage(900, 450);
         com.lowagie.text.Image pdfImg1 = com.lowagie.text.Image.getInstance(writer, img1, 1f);
         pdfImg1.scaleToFit(780, 320);
@@ -315,7 +315,7 @@ public class ReporteService {
 
         document.add(new Paragraph("\n"));
 
-        // Gráfico de ocupación
+        //Gráfico de ocupación:
         java.awt.Image img2 = graficoOcupacion.createBufferedImage(900, 450);
         com.lowagie.text.Image pdfImg2 = com.lowagie.text.Image.getInstance(writer, img2, 1f);
         pdfImg2.scaleToFit(780, 320);
@@ -330,6 +330,8 @@ public class ReporteService {
         return nombreArchivo;
     }
 
+    
+    
     public void enviarPdfPorCorreo(String rutaPdf) {
         if (AuthController.usuarioActual == null) {
             return;
@@ -342,7 +344,6 @@ public class ReporteService {
                     "El usuario no tiene correo registrado.");
             return;
         }
-
         try {
             emailService.enviarCorreoConAdjunto(
                     destinatario,

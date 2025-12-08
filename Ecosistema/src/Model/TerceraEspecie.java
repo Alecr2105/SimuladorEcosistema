@@ -2,7 +2,7 @@ package Model;
 
 public class TerceraEspecie extends Animal {
 
-    private String variante; // "Mutante", "AliadaPresas", "AliadaDepredadores"
+    private String variante; //"Mutante", "AliadaPresas", "AliadaDepredadores"
 
     public TerceraEspecie(int fila, int columna, String variante) {
         super(fila, columna);
@@ -19,7 +19,7 @@ public class TerceraEspecie extends Animal {
 
     @Override
     public int getTipo() {
-        return 3; // en la matriz será 3
+        return 3; //3 en la matríz
     }
 }
 

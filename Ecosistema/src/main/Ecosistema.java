@@ -10,19 +10,20 @@ import com.formdev.flatlaf.FlatLightLaf;
 public class Ecosistema {
     public static void main(String[] args) {
 
-            //IMportacion de librería FlatLaf, para interfaz moderna
-            //en los tabs. 
+            //IMportacion de librería FlatLaf, para interfaz moderna en los tabs. 
             //Activamos FlatLaf
-            FlatLightLaf.setup(); // más recomendado que UIManager.setLookAndFeel
+            FlatLightLaf.setup();
 
-            // Crear la vista
+            //Creamos la vista:
             frmPrincipal vista = new frmPrincipal();
-            // Crear el servicio (modelo)
+            
+            //Creamos el servicio modelo:
             AuthService service = new AuthService();
-            // Crear el controlador y enlazarlo con la vista y el modelo
+            
+            //Creamos el controlador y lo enlasamos con la vista y el modelo:
             AuthController controller = new AuthController(vista, service);
 
-            // Mostrar la vista
+            //Mostrar la vista:
             vista.setVisible(true);
         }
    

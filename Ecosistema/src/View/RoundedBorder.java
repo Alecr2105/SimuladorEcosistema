@@ -1,4 +1,4 @@
-package View; // ajusta al paquete real
+package View;
 
 import java.awt.*;
 import javax.swing.border.Border;
@@ -25,7 +25,7 @@ public class RoundedBorder implements Border {
         Graphics2D g2 = (Graphics2D) g.create();
         // suavizado
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(c.getForeground()); // color borde igual que el texto por defecto
+        g2.setColor(c.getForeground());
         g2.drawRoundRect(x, y, width-1, height-1, radius, radius);
         g2.dispose();
     }

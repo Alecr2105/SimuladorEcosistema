@@ -81,5 +81,4 @@ public class ReporteDatos {
     public double getPorcentajeOcupacion() {
         return totalCeldas == 0 ? 0 : (celdasOcupadas * 100.0 / totalCeldas);
     }
-    
 }

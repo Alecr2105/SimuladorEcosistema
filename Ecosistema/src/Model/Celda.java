@@ -1,4 +1,3 @@
-// Celda.java
 package Model;
 
 public class Celda {

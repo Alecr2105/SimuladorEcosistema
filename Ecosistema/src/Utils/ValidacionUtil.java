@@ -39,6 +39,9 @@ public class ValidacionUtil {
     }
     
     
+    
+    
+    
     public static boolean mayorDeEdad(Date fecha){
         if (fecha == null) return false;
         
@@ -52,20 +55,25 @@ public class ValidacionUtil {
         return edad >= 18;
     }
     
-    // Valida la tercera especie: devuelve true si está activa y se seleccionó al menos una variante
+    
+    
+    
+    
+    
+    //Validamos la tercera especie: devuelve true si está activa y se seleccionó al menos una variante:
     public static boolean terceraEspecieValida(
             boolean terceraEspecieActiva, boolean mutante, boolean aliadasPresas, boolean aliadosDepredadores) {
         if (!terceraEspecieActiva) return true; // No está activa, no importa
         return mutante || aliadasPresas || aliadosDepredadores;
     }
 
-    // Valida la mutación: devuelve true si está activada y se seleccionó un tipo
+    //Validamos la mutación: devuelve true si está activada y se seleccionó un tipo:
     public static boolean mutacionValida(boolean mutacionesActivas, String tipoMutacion) {
         if (!mutacionesActivas) return true; // No está activa, no importa
         return tipoMutacion != null && !tipoMutacion.trim().isEmpty();
     }
 
-    // Valida que se haya seleccionado un escenario base
+    //Validamos que se haya seleccionado un escenario base:
     public static boolean escenarioSeleccionado(Object escenario) {
         return escenario != null && !escenario.toString().trim().isEmpty()
                 && !escenario.toString().equals("Seleccione un escenario");

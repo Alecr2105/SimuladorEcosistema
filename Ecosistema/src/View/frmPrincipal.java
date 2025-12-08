@@ -1,28 +1,33 @@
 package View;
 
+//Importacion de clases:
 import Business.ReporteService;
 import Controller.AuthController;
 import Controller.EcosistemaController;
 import Controller.ReporteController;
 import Model.ReporteDatos;
+
+//Elementos gráficos/JOPAINE:
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
 import javax.swing.JOptionPane;
+
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
-public class frmPrincipal extends javax.swing.JFrame {
 
+
+public class frmPrincipal extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmPrincipal.class.getName());
     private EcosistemaController ecosistemaController;
     private final ReporteService reporteService = new ReporteService();
     
-    //private final EmailService emailService = new EmailService();
     private boolean reporteDesbloqueado = false;
     private ReporteController reporteController;
     
@@ -30,11 +35,12 @@ public class frmPrincipal extends javax.swing.JFrame {
     
     public frmPrincipal() {
         initComponents();
-      
+        
         //Botón:
         btngTerceraEspecie.clearSelection();
         
-        setLocationRelativeTo(null);//centramos pantalla:
+        setLocationRelativeTo(null);//Centramos pantalla
+        
         cmbEscenario.setModel(new javax.swing.DefaultComboBoxModel<>(
                 new String[]{"Seleccione un escenario","Equilibrado", "Depredadores dominan", "Presas dominan"}
         ));
@@ -45,7 +51,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         ));
         cmbMutacion.setSelectedIndex(0);
 
-        //Personalizacion de tabs con FlatLaf
+        //Personalizacion de tabs con FlatLaf:
         tbpPrincipal.putClientProperty("JTabbedPane.tabHeight", 40);
         tbpPrincipal.putClientProperty("JTabbedPane.showTabSeparators", true);
         tbpPrincipal.putClientProperty("JTabbedPane.tabSeparatorsFullHeight", true);
@@ -65,7 +71,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         txtRegCorreo.setBorder(new RoundedBorder(radio));
         pwpReg.setBorder(new RoundedBorder(radio));
 
-        // ---- Placeholders ----
+        //Placeholders:
         setPlaceholder(txtCedula, "Cédula");
         setPlaceholder(txtRegCedula, "Cédula");
         setPlaceholder(txtRegNombre, "Nombre completo");
@@ -76,25 +82,32 @@ public class frmPrincipal extends javax.swing.JFrame {
         bloquearAccesoEcosistema();
         bloquearAccesoReporte();
 
+        
+        
         //Agregar los listeners con los métods mostrarLogin y mostrarRegistro.
         //Cursores tipo mano...
         jlNoCuenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jlTieneCuenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        //Cambiar de login a registro
+        
+        
+        
+        //Cambiar de login a registro:
         jlNoCuenta.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 mostrarRegistro();
             }
         });
-        //Cambiar de registro a login
+        //Cambiar de registro a login:
         jlTieneCuenta.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 mostrarLogin();
             }
         });
+        
+        
         
         ecosistemaController = new EcosistemaController(this);
         
@@ -146,7 +159,6 @@ public class frmPrincipal extends javax.swing.JFrame {
         rdbRegMasculino.setSelected(false);
         rdbRegFemenino.setSelected(false);
         
-        
         //ECOSISTEMAS:
         chkMutacionesGeneticas.setSelected(false);
         rbtnTerceraEspecie.setSelected(false);
@@ -178,8 +190,9 @@ public class frmPrincipal extends javax.swing.JFrame {
     
     
     
-    
-    // Placeholder para JTextField
+    //PLACEHOLDERS:
+    //**************************************************************
+    //Placeholder para JTextField:
     public void setPlaceholder(JTextField txt, String placeholder) {
         txt.setForeground(Color.GRAY);
         txt.setText(placeholder);
@@ -192,7 +205,6 @@ public class frmPrincipal extends javax.swing.JFrame {
                     txt.setForeground(Color.BLACK);
                 }
             }
-
             @Override
             public void focusLost(FocusEvent e) {
                 if (txt.getText().isEmpty()) {
@@ -203,11 +215,11 @@ public class frmPrincipal extends javax.swing.JFrame {
         });
     }
 
-    // Placeholder para JPasswordField
+    //Placeholder para JPasswordField:
     public void setPlaceholderPassword(JPasswordField pwd, String placeholder) {
         pwd.setForeground(Color.GRAY);
         pwd.setText(placeholder);
-        // mostrar texto (desactivar echo char)
+        //Mostrar texto (desactivar echo char):
         pwd.setEchoChar((char) 0);
 
         pwd.addFocusListener(new FocusAdapter() {
@@ -217,11 +229,10 @@ public class frmPrincipal extends javax.swing.JFrame {
                 if (current.equals(placeholder)) {
                     pwd.setText("");
                     pwd.setForeground(Color.BLACK);
-                    // restablece echo char para ocultar texto (valor por defecto)
+                    //Restablecemos echo char para ocultar texto:
                     pwd.setEchoChar('\u2022');
                 }
             }
-
             @Override
             public void focusLost(FocusEvent e) {
                 String current = new String(pwd.getPassword());
@@ -304,7 +315,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
     //Getters de los componentes:
     //***************************************************************
-    // Panels principales
+    //Panels principales:
     public javax.swing.JTabbedPane getTbpPrincipal() {
         return tbpPrincipal;
     }
@@ -325,7 +336,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     
     
     
-    // LOGIN(pnlLogin):
+    //LOGIN(pnlLogin):
     public javax.swing.JTextField getTxtCedula() {
         return txtCedula;
     }
@@ -350,7 +361,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     
     
     
-    // REGISTRO(pnlRegistro):
+    //REGISTRO(pnlRegistro):
     public javax.swing.JTextField getTxtRegCedula() {
         return txtRegCedula;
     }
@@ -371,7 +382,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         return btnCrearCuenta;
     }
 
-    // RadioButtons de género
+    //RadioButtons de género:
     public javax.swing.JRadioButton getRdbMaculino() {
         return rdbRegMasculino;
     }
@@ -384,10 +395,6 @@ public class frmPrincipal extends javax.swing.JFrame {
         return btnGGenero;
     }
 
-    
-    
-    
-    
     
     
     
@@ -434,7 +441,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         } else if (rbtnEspecieAliadaDepredadores.isSelected()) {
             return "AliadaDepredadores";
         }
-        return null; // ninguna
+        return null;
     }
 
     public javax.swing.JTextArea getTxtMovimientos() {
@@ -468,7 +475,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     
     
     
-    // Labels
+    //Labels:
     public javax.swing.JLabel getLblRegistro() {
         return jlRegistroUsuario;
     }
@@ -535,7 +542,7 @@ public class frmPrincipal extends javax.swing.JFrame {
             datos = new ReporteDatos(10 * 10); // 10x10
         }
 
-        // 2) Siempre llenar la UI con lo que tengamos en 'datos'
+        //Siempre llenar la UI con lo que tengamos en datos:
         spnCantidadTurnos.setModel(new javax.swing.SpinnerNumberModel(
                 datos.getTotalTurnos(), 0, 1000, 1));
         spnCantidadTurnos.setEnabled(false);
@@ -548,24 +555,23 @@ public class frmPrincipal extends javax.swing.JFrame {
                 datos.getTurnoExtincionDepredadores() == null
                 ? "Ninguno": datos.getTurnoExtincionDepredadores().toString());
 
-        // 3) Dibujar gráficos
+        //Dibujar gráficos:
         reporteController.dibujarGraficoPresasDepredadores(datos);
         reporteController.dibujarGraficoOcupacion(datos);
 
-        // 3) Intentar generar PDF y enviarlo por correo
+        //Generar PDF y enviarlo por correo:
         try {
-            // Obtener los charts directamente desde los paneles
+            //Obtenemos los charts directamente desde los paneles:
             JFreeChart graficoPresas = ((ChartPanel) pnlGraficoPresasDepredadores.getComponent(0)).getChart();
             JFreeChart graficoOcupacion = ((ChartPanel) pnlGraficoOcupacion.getComponent(0)).getChart();
 
-            // Generar PDF con ambos gráficos (Opción A: una página por gráfico)
+            //Generar PDF con ambos gráficos:
             String rutaPdf = reporteService.generarPdfConGraficos(
                     datos,
                     graficoPresas,
                     graficoOcupacion,
                     "reporte_simulacion.pdf"
             );
-
             reporteService.enviarPdfPorCorreo(rutaPdf);
 
         } catch (Exception e) {

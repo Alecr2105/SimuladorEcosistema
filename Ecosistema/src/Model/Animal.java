@@ -5,11 +5,11 @@ public abstract class Animal {
     protected int fila;
     protected int columna;
 
-    // para reglas de hambre / reproducción
+    //Reglas de hambre/reproducción:
     protected int turnosVivo;
     protected int turnosSinComer;
-    protected boolean haComidoAlgunaVez;   // para depredadores y su reproducción
-    protected int turnosDesdeReproduccion; // para espaciar reproducciones
+    protected boolean haComidoAlgunaVez;   //Depredadores y su reproducción
+    protected int turnosDesdeReproduccion; //Espaciar reproducciones
 
     public Animal(int fila, int columna) {
         this.fila = fila;
@@ -20,20 +20,24 @@ public abstract class Animal {
         this.turnosDesdeReproduccion = 0;
     }
 
+    
     public int getFila() { return fila; }
     public int getColumna() { return columna; }
 
     public void setFila(int fila) { this.fila = fila; }
     public void setColumna(int columna) { this.columna = columna; }
 
-    // se llama al final de cada turno completo
+    
+    
+    //Este método se llama al final de cada turno completo:
     public void aumentarTurno() {
         turnosVivo++;
         turnosSinComer++;
         turnosDesdeReproduccion++;
     }
 
-    // cuando come (depredador)
+    
+    //Cuando come (depredador):
     public void reiniciarHambre() {
         turnosSinComer = 0;
         haComidoAlgunaVez = true;

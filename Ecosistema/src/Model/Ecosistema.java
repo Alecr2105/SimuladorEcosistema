@@ -24,7 +24,6 @@ public class Ecosistema {
         return matriz;
     }
 
-    // compatibilidad
     public void generarEscenario(int presas, int depredadores) {
         generarEscenario(presas, depredadores, 0, null, false, null);
     }
@@ -36,7 +35,7 @@ public class Ecosistema {
         generarEscenario(presas, depredadores, terceras, varianteTercera, false, null);
     }
 
-// NUEVO: con tercera especie + mutaciones
+    //NUEVO: con tercera especie + mutaciones:
     public void generarEscenario(int presas,
             int depredadores,
             int terceras,
@@ -44,14 +43,14 @@ public class Ecosistema {
             boolean mutacionesActivas,
             String tipoMutacion) {
 
-        // Limpio
+        //Espacio limpio:
         for (int i = 0; i < TAM; i++) {
             for (int j = 0; j < TAM; j++) {
                 matriz[i][j].setAnimal(null);
             }
         }
 
-        // Colocar presas
+        //Colocamos presas:
         for (int k = 0; k < presas; k++) {
             int f, c;
             do {
@@ -62,7 +61,7 @@ public class Ecosistema {
             matriz[f][c].setAnimal(new Presa(f, c));
         }
 
-        // Colocar depredadores
+        //Colocamos depredadores:
         for (int k = 0; k < depredadores; k++) {
             int f, c;
             do {
@@ -73,7 +72,7 @@ public class Ecosistema {
             matriz[f][c].setAnimal(new Depredador(f, c));
         }
 
-        // Tercera especie (si aplica)
+        //Tercera especie (si aplica):
         if (terceras > 0 && varianteTercera != null) {
             for (int k = 0; k < terceras; k++) {
                 int f, c;
@@ -86,14 +85,16 @@ public class Ecosistema {
             }
         }
 
-        // Mutaciones (si aplica):
+        //Mutaciones (si aplica):
         if (mutacionesActivas && tipoMutacion != null) {
             aplicarMutacionesIniciales(tipoMutacion);
         }
     }
 
+    
+    
     private void aplicarMutacionesIniciales(String tipoMutacion) {
-        double prob = 0.3; // 30% de probabilidad de ser mutado
+        double prob = 0.3; //30% de probabilidad de ser mutado
 
         if ("FURIA".equals(tipoMutacion)) {
             for (int i = 0; i < TAM; i++) {
@@ -120,7 +121,9 @@ public class Ecosistema {
         }
     }
 
-    // Matriz numérica para el JTable (0 vacío, 1 presa, 2 depredador, 3 tercera especie)
+    
+    
+    //Matriz numérica para el JTable (0 vacío, 1 presa, 2 depredador, 3 tercera especie):
     public int[][] getMatrizNumerica() {
         int[][] m = new int[TAM][TAM];
         for (int i = 0; i < TAM; i++) {
@@ -135,10 +138,15 @@ public class Ecosistema {
         return m;
     }
 
-    // ==========================
-    //  MOVIMIENTO POR FASES
-    // ==========================
-    // 1) Solo depredadores
+    
+    
+    
+    
+    
+   
+    //MOVIMIENTO POR SECUENCIA:
+    // **************************************************************************
+    //Solo depredadores:
     public void moverSoloDepredadores(Ecosistema ecosistema) {
 
         List<int[]> posicionesDepredadores = new ArrayList<>();
@@ -162,7 +170,7 @@ public class Ecosistema {
         }
     }
 
-    // 2) Solo presas
+    //Solo presas:
     public void moverSoloPresas(Ecosistema ecosistema) {
 
         List<int[]> posicionesPresas = new ArrayList<>();
@@ -186,7 +194,7 @@ public class Ecosistema {
         }
     }
 
-    // 3) Solo tercera especie (la movemos tipo presa)
+    //Solo tercera especie (la movemos tipo presa):
     public void moverSoloTerceraEspecie() {
 
         List<int[]> posiciones = new ArrayList<>();
@@ -208,38 +216,37 @@ public class Ecosistema {
 
                 String variante = especie3.getVariante();
 
-                // 1) Intentar atacar según la variante
+                //Atacar según la variante
                 int[] destinoAtaque = null;
 
                 switch (variante) {
                     case "Mutante" -> {
-                        // puede comerse presas y depredadores
+                        //Esta puede comerse presas y depredadores:
                         List<int[]> objetivos = obtenerAdyacentesPresasYDepredadores(f, c);
                         if (!objetivos.isEmpty()) {
                             destinoAtaque = objetivos.get(random.nextInt(objetivos.size()));
                         }
                     }
                     case "AliadaPresas" -> {
-                        // ataca depredadores
+                        //Ataca depredadores:
                         List<int[]> depreds = obtenerDepredadoresAdyacentes(f, c);
                         if (!depreds.isEmpty()) {
                             destinoAtaque = depreds.get(random.nextInt(depreds.size()));
                         }
                     }
                     case "AliadaDepredadores" -> {
-                        // ataca presas
+                        //Ataca presas:
                         List<int[]> presas = obtenerPresasAdyacentes(f, c);
                         if (!presas.isEmpty()) {
                             destinoAtaque = presas.get(random.nextInt(presas.size()));
                         }
                     }
                 }
-
                 if (destinoAtaque != null) {
                     int nf = destinoAtaque[0];
                     int nc = destinoAtaque[1];
 
-                    // se mueve a la celda del objetivo y lo elimina
+                    //Se mueve a la celda del objetivo y lo elimina:
                     Animal objetivo = matriz[nf][nc].getAnimal();
 
                     matriz[nf][nc].setAnimal(especie3);
@@ -253,7 +260,7 @@ public class Ecosistema {
                     continue;
                 }
 
-                // 2) Si no atacó a nadie, se mueve como una presa (a celda vacía)
+                //Si no atacó a nadie, se mueve como una presa (a celda vacía):
                 List<int[]> libres = obtenerCeldasLibresAdyacentes(f, c);
                 if (libres.isEmpty()) {
                     continue;
@@ -272,12 +279,14 @@ public class Ecosistema {
         }
     }
 
-    // ---------- MOVIMIENTO INTERNO ----------
+    
+    
+    //Movimientos internos:
     private void moverPresa(int fila, int col, Presa presa) {
         List<int[]> libres = obtenerCeldasLibresAdyacentes(fila, col);
 
         if (libres.isEmpty()) {
-            return; // no se mueve
+            return; //Se queda inmovil
         }
 
         int[] destino = libres.get(random.nextInt(libres.size()));
@@ -291,9 +300,10 @@ public class Ecosistema {
         presa.setColumna(nc);
     }
 
+    
+    
     private void moverDepredador(int fila, int col, Depredador depredador) {
-
-        // 1) Buscar presas adyacentes
+        //Busca presas adyacentes:
         List<int[]> presas = obtenerPresasAdyacentes(fila, col);
 
         if (!presas.isEmpty()) {
@@ -303,18 +313,18 @@ public class Ecosistema {
 
             Animal objetivo = matriz[nf][nc].getAnimal();
 
-            // 💀 CASO 1: presa venenosa → mueren ambos
+            //Si la presa es venenosa -> mueren ambos:
             if (objetivo instanceof Presa p && p.isVenenosa()) {
 
-                // log interno (luego lo sacamos al JTextArea)
+                //Log interno:
                 eventosTurno.add("Depredador murió al comer una presa venenosa en (" + nf + "," + nc + ").");
 
-                matriz[fila][col].setAnimal(null); // muere depredador
-                matriz[nf][nc].setAnimal(null);    // desaparece la presa
+                matriz[fila][col].setAnimal(null); //Muere depredador
+                matriz[nf][nc].setAnimal(null);    //Desaparece la presa
                 return;
             }
 
-            // 🥩 CASO 2: presa normal → comportamiento normal
+            //Si la presa es normal -> comportamiento normal:
             matriz[nf][nc].setAnimal(depredador);
             matriz[fila][col].setAnimal(null);
 
@@ -326,10 +336,11 @@ public class Ecosistema {
             eventosTurno.add("Depredador comió una presa en (" + nf + "," + nc + ").");
             return;
         }
-        // 2) Si no hay presas, buscar celda libre (igual que ya lo tenías)
-
+        //Si no hay presas, buscar celda libre...
     }
 
+    
+    
     private List<int[]> obtenerCeldasLibresAdyacentes(int fila, int col) {
         List<int[]> libres = new ArrayList<>();
         int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -363,26 +374,27 @@ public class Ecosistema {
         return presas;
     }
 
-    //Fin de turnos: Alimentación + reproducción
+    
+    //Fin de turnos: Alimentación + reproducción:
     public void aplicarFinDeTurnoBasico(Ecosistema ecosistema) {
         List<Presa> presasReproductoras = new ArrayList<>();
         List<Depredador> depredadoresReproductores = new ArrayList<>();
 
-        // 1) Aumentar contadores y aplicar muerte por hambre
+        //Aumentamos contadores y aplicamos muerte por hambre:
         for (int i = 0; i < TAM; i++) {
             for (int j = 0; j < TAM; j++) {
                 if (!matriz[i][j].estaVacia()) {
                     Animal a = matriz[i][j].getAnimal();
-                    a.aumentarTurno(); // +1 turno vida, +1 sin comer, +1 desde reproducción
+                    a.aumentarTurno(); //+1 turno vida, +1 sin comer, +1 desde reproducción
 
                     if (a instanceof Depredador dep) {
-                        // Muerte por hambre: 3 turnos sin comer
+                        //Muerte por hambre: 3 turnos sin comer
                         if (dep.getTurnosSinComer() >= 3 && !dep.isFurioso()) {
                             matriz[i][j].setAnimal(null);
                             continue;
                         }
 
-                        // Reproducción depredador:
+                        //Reproducción depredador:
                         // - ha comido alguna vez
                         // - no lleva más de 2 turnos sin comer
                         // - han pasado >=3 turnos desde su última reproducción
@@ -404,17 +416,19 @@ public class Ecosistema {
                 }
             }
         }
-
-        // 2) Reproducción de presas
+        //Reproducción de presas:
         for (Presa madre : presasReproductoras) {
             reproducirPresa(madre);
         }
 
-        // 3) Reproducción de depredadores
+        //Reproducción de depredadores:
         for (Depredador padre : depredadoresReproductores) {
             reproducirDepredador(padre);
         }
     }
+    
+    
+    
 
     private void reproducirPresa(Presa madre) {
         List<int[]> libres = obtenerCeldasLibresAdyacentes(madre.getFila(), madre.getColumna());
@@ -422,7 +436,6 @@ public class Ecosistema {
         if (libres.isEmpty()) {
             return;
         }
-
         int[] destino = libres.get(random.nextInt(libres.size()));
         int nf = destino[0];
         int nc = destino[1];
@@ -435,13 +448,15 @@ public class Ecosistema {
         madre.reiniciarReproduccion();
     }
 
+    
+    
+    
     private void reproducirDepredador(Depredador padre) {
         List<int[]> libres = obtenerCeldasLibresAdyacentes(padre.getFila(), padre.getColumna());
 
         if (libres.isEmpty()) {
             return;
         }
-
         int[] destino = libres.get(random.nextInt(libres.size()));
         int nf = destino[0];
         int nc = destino[1];
@@ -452,6 +467,11 @@ public class Ecosistema {
         padre.reiniciarReproduccion();
     }
 
+    
+    
+    
+    
+    
     private List<int[]> obtenerDepredadoresAdyacentes(int fila, int col) {
         List<int[]> depreds = new ArrayList<>();
         int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -488,6 +508,9 @@ public class Ecosistema {
         return objetivos;
     }
 
+    
+    
+    
     public int contarPresas() {
         int cont = 0;
         for (int i = 0; i < TAM; i++) {
@@ -500,6 +523,9 @@ public class Ecosistema {
         return cont;
     }
 
+    
+    
+    
     public int contarDepredadores() {
         int cont = 0;
         for (int i = 0; i < TAM; i++) {
@@ -512,6 +538,9 @@ public class Ecosistema {
         return cont;
     }
 
+    
+    
+    
     public int contarTerceraEspecie() {
         int cont = 0;
         for (int i = 0; i < TAM; i++) {
@@ -524,18 +553,29 @@ public class Ecosistema {
         return cont;
     }
 
+    
+    
     public List<String> consumirEventosTurno() {
         List<String> copia = new ArrayList<>(eventosTurno);
         eventosTurno.clear();
         return copia;
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    //REGISTRO DE EVENTOS TERCERA ESPECIE:
+    //*******************************************************************************************
     private void registrarEventoTerceraEspecie(String variante, Animal objetivo, int nf, int nc) {
         if (objetivo instanceof Depredador) {
             eventosTurno.add("Especie " + variante + " eliminó a un depredador en (" + nf + "," + nc + ").");
             return;
         }
-
         if (objetivo instanceof Presa) {
             String textoVariante = switch (variante) {
                 case "AliadaDepredadores" -> "aliada de depredadores";
@@ -546,5 +586,4 @@ public class Ecosistema {
             eventosTurno.add("Especie " + textoVariante + " eliminó una presa en (" + nf + "," + nc + ").");
         }
     }
-
 }

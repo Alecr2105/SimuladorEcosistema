@@ -19,6 +19,11 @@ public class EmailService {
     private static final String REMITENTE = "ecosistemas29@gmail.com";
     private static final String CONTRASENA_APLICACION = "svioftceqslhxxvr";
 
+    
+    
+    
+    
+    
     public void enviarCorreo(String destinatario, String asunto, String mensaje) {
         try {
             Session session = crearSesion();
@@ -32,16 +37,20 @@ public class EmailService {
             Transport.send(correo);
 
         } catch (MessagingException e) {
-            e.printStackTrace();  // MUESTRA EL ERROR REAL
+            e.printStackTrace();//Mostramos el error real
             throw new RuntimeException("Error al enviar correo: " + e.getMessage());
         }
     }
 
+    
+    
+    
+    
     private Session crearSesion() {
         Properties props = new Properties();
 
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");  // TLS
+        props.put("mail.smtp.starttls.enable", "true");//TLS
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
 
@@ -52,6 +61,10 @@ public class EmailService {
             }
         });
     }
+    
+    
+    
+    
     
     public void enviarCorreoConAdjunto(String destinatario,
                                        String asunto,
