@@ -86,7 +86,7 @@ public class Ecosistema {
             }
         }
 
-        // Mutaciones
+        // Mutaciones (si aplica):
         if (mutacionesActivas && tipoMutacion != null) {
             aplicarMutacionesIniciales(tipoMutacion);
         }
@@ -139,7 +139,7 @@ public class Ecosistema {
     //  MOVIMIENTO POR FASES
     // ==========================
     // 1) Solo depredadores
-    public void moverSoloDepredadores() {
+    public void moverSoloDepredadores(Ecosistema ecosistema) {
 
         List<int[]> posicionesDepredadores = new ArrayList<>();
         for (int i = 0; i < TAM; i++) {
@@ -163,7 +163,7 @@ public class Ecosistema {
     }
 
     // 2) Solo presas
-    public void moverSoloPresas() {
+    public void moverSoloPresas(Ecosistema ecosistema) {
 
         List<int[]> posicionesPresas = new ArrayList<>();
         for (int i = 0; i < TAM; i++) {
@@ -359,11 +359,9 @@ public class Ecosistema {
         return presas;
     }
 
-    // ==========================
-    //  FIN DE TURNO: HAMBRE + REPRO
-    // ==========================
-    public void aplicarFinDeTurnoBasico() {
-
+    
+    //Fin de turnos: Alimentación + reproducción
+    public void aplicarFinDeTurnoBasico(Ecosistema ecosistema) {
         List<Presa> presasReproductoras = new ArrayList<>();
         List<Depredador> depredadoresReproductores = new ArrayList<>();
 

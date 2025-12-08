@@ -1,15 +1,20 @@
 package Business;
+
 import Controller.AuthController;
 import Model.ReporteDatos;
-import Utils.EmailService;
 
-//Librería itext
+
+//Librería itext:
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import java.text.DecimalFormat;
+
+//Librería email:
+import Utils.EmailService;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +28,6 @@ import javax.swing.JOptionPane;
 import org.jfree.chart.JFreeChart;
 
 public class ReporteService {
-
     private static final Logger LOGGER = Logger.getLogger(ReporteService.class.getName());
     private static final String ARCHIVO_ESTADOS = "estado_turnos.txt";
     private static final int TAM_MATRIZ = 10;
@@ -31,7 +35,7 @@ public class ReporteService {
     private final EmailService emailService = new EmailService();
 
    
-    //Método de conveniencia: siempre devuelve un ReporteDatos, aunque haya
+    //Método que siempre devuelve un ReporteDatos, aunque haya
     //problemas leyendo el archivo.
     public ReporteDatos cargarDatosDesdeArchivo() {
         return cargarDatosDesdeArchivo(ARCHIVO_ESTADOS);
@@ -55,7 +59,7 @@ public class ReporteService {
 
             while ((linea = br.readLine()) != null) {
                 if (linea.startsWith("---TURNO=")) {
-                    // Cerrar turno anterior si estaba en proceso
+                    //Cerramos turno anterior si estaba en proceso:
                     if (turnoEnProceso != null && !filas.isEmpty()) {
                         seLeyeronTurnos |= procesarTurno(turnoEnProceso, filas, reporteActual);
                     }
@@ -63,7 +67,7 @@ public class ReporteService {
                     turnoEnProceso = parsearTurnoSeguro(linea);
                     filas = new ArrayList<>();
 
-                    // Si es un nuevo ciclo (turno 0) reiniciamos acumuladores
+                    //Si es un nuevo ciclo (turno 0) reiniciamos acomuladores:
                     if (turnoEnProceso != null && turnoEnProceso == 0) {
                         reporteActual = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
                     }
@@ -78,26 +82,25 @@ public class ReporteService {
                 }
             }
 
-            // Procesar el último turno que haya quedado pendiente
+            //Procesamos el último turno pendiente:
             if (turnoEnProceso != null && !filas.isEmpty()) {
                 seLeyeronTurnos |= procesarTurno(turnoEnProceso, filas, reporteActual);
             }
-
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Error leyendo el archivo de estados: " + ruta, e);
             return crearReporteVacio();
         }
-
         if (!seLeyeronTurnos) {
             LOGGER.warning("El archivo de estados no contiene turnos válidos de simulación.");
             return crearReporteVacio();
         }
-
         return reporteActual;
     }
 
-     //Crea un reporte vacío (todo en 0) para evitar romper la UI.
-   
+    
+    
+    
+    //Creamos un reporte vacío (todo en 0) esto para evitar romper la UI.
     private ReporteDatos crearReporteVacio() {
         ReporteDatos datos = new ReporteDatos(TAM_MATRIZ * TAM_MATRIZ);
         datos.setTotalTurnos(0);
@@ -111,8 +114,7 @@ public class ReporteService {
     }
 
     
-    //Procesa un bloque de 10 filas (un turno) y actualiza el reporte.
-    
+    //Procesa un bloque de 10 filas (un turno) y actualizamos el reporte.
     private boolean procesarTurno(int turno, List<String> filas, ReporteDatos reporte) {
         if (filas.size() != TAM_MATRIZ) {
             LOGGER.log(Level.WARNING,
@@ -124,7 +126,6 @@ public class ReporteService {
         int depredadores = 0;
         int terceras = 0;
         int ocupadas = 0;
-
         for (int indiceFila = 0; indiceFila < filas.size(); indiceFila++) {
             String[] valores = filas.get(indiceFila).split(";");
             if (valores.length != TAM_MATRIZ) {
@@ -133,10 +134,8 @@ public class ReporteService {
                         new Object[]{indiceFila + 1, turno, TAM_MATRIZ});
                 return false;
             }
-
             for (String v : valores) {
                 int val;
-
                 try {
                     val = Integer.parseInt(v.trim());
                 } catch (NumberFormatException ex) {
@@ -145,7 +144,6 @@ public class ReporteService {
                             new Object[]{turno, v});
                     return false;
                 }
-
                 if (val == 1) {
                     presas++;
                 } else if (val == 2) {
@@ -153,13 +151,11 @@ public class ReporteService {
                 } else if (val == 3) {
                     terceras++;
                 }
-
                 if (val != 0) {
                     ocupadas++;
                 }
             }
         }
-
         // Actualizar datos del reporte con el último turno leído
         reporte.setTotalTurnos(Math.max(reporte.getTotalTurnos(), turno));
         reporte.setPresasFinales(presas);
@@ -175,10 +171,6 @@ public class ReporteService {
         }
         return true;
     }
-
-    
-    //Intenta extraer el número de turno de la cabecera, pero nunca lanza
-    //excepción.
 
     private Integer parsearTurnoSeguro(String linea) {
         try {

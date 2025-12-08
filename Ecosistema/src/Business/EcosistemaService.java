@@ -6,28 +6,21 @@ import Model.Ecosistema;
 public class EcosistemaService {
     private Ecosistema ecosistema;
     private EcosistemaDAO ecosistemaDAO;
-
-    // Servicios especializados
-    private MovimientoService movimientoService;
-    private AlimentacionService alimentacionService;
-    private ReproduccionService reproduccionService;
-
+    
     public EcosistemaService() {
         ecosistema = new Ecosistema();
         ecosistemaDAO = new EcosistemaDAO();
-
-        movimientoService = new MovimientoService();
-        alimentacionService = new AlimentacionService();
-        reproduccionService = new ReproduccionService();
     }
 
+    
+    
+    //MÉTODOS PRINCIPALES:
+    //******************************************************************************
     //Generamos los escenarios:
-    //**********************************************************
     public void generarEscenario(int presas, int depredadores) {
         ecosistema.generarEscenario(presas, depredadores);
     }
 
-    // Versión con tercera especie
     public void generarEscenario(int presas,
             int depredadores,
             int terceras,
@@ -38,83 +31,58 @@ public class EcosistemaService {
                 mutacionesActivas, tipoMutacion);
     }
     
-    
 
-    // ========== ACCESO AL MODELO ==========
+    //Acceso al modelo:
     public int[][] getMatrizNumerica() {
         return ecosistema.getMatrizNumerica();
     }
 
-    
-    
-    
     public Ecosistema getEcosistema() {
         return ecosistema;
     }
     
     
-    
-
-    // ========== MOVIMIENTO (usa MovimientoService / modelo) ==========
+    //Moviemientos (delegamos desde ecosistem.java):
     public void moverDepredadores() {
-        // delegamos en MovimientoService
-        movimientoService.moverDepredadores(ecosistema);
+        ecosistema.moverSoloDepredadores(ecosistema);
     }
 
     public void moverPresas() {
-        // delegamos en MovimientoService
-        movimientoService.moverPresas(ecosistema);
+        ecosistema.moverSoloPresas(ecosistema);
     }
 
-    
-    
-    
-    
     public void moverTerceraEspecie() {
-        // por ahora llamamos directo al modelo
         ecosistema.moverSoloTerceraEspecie();
-        // si quieres, luego puedes mover esto a MovimientoService
     }
-    
-    
-    
-    
-    
-    
 
-    // ========== FIN DE TURNO: hambre + reproducción ==========
+    
+    
+    
+    //FIN DE TURNO: hambre + reproducción.
     public void aplicarFinDeTurnoBasico() {
         // hambre, contadores, muerte y reproducción
-        alimentacionService.aplicarReglasAlimentacionYFinTurno(ecosistema);
-
-        // gancho para futura lógica extra de reproducción
-        reproduccionService.aplicarReglasReproduccion(ecosistema);
+        ecosistema.aplicarFinDeTurnoBasico(ecosistema);
     }
     
-    
-    
-    
 
-    // ========== ARCHIVOS ==========
+    //Pasamos datos iniciales a ecosistemasDAO para guardar en el archivo ecosistemas.txt:
     public void guardarDatosIniciales(int presas,
             int depredadores,
             int maxTurnos,
             String escenario) {
-
         ecosistemaDAO.guardarDatosIniciales(ecosistema, presas, depredadores, maxTurnos, escenario);
     }
 
-    
-    
-    
-    
-    
-    
     
     public void guardarEstadoTurno(int numeroTurno, String escenario) {
         ecosistemaDAO.guardarEstadoTurno(ecosistema, numeroTurno, escenario);
     }
 
+    
+    
+    
+    //Getters propios de la clase EcosistemasService:
+    //***********************************************
     public int getTotalPresas() {
         return ecosistema.contarPresas();
     }
@@ -130,5 +98,4 @@ public class EcosistemaService {
     public java.util.List<String> consumirEventosTurno() {
         return ecosistema.consumirEventosTurno();
     }
-
 }

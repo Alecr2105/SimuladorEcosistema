@@ -10,7 +10,6 @@ import Model.Celda;
 import Model.Animal;
 import Model.Presa;
 import Model.Depredador;
-import Model.ReporteDatos;
 import Model.TerceraEspecie;
 import Utils.ValidacionUtil;
 import javax.swing.JOptionPane;
