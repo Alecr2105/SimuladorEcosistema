@@ -24,17 +24,6 @@ public class Ecosistema {
         return matriz;
     }
 
-    public void generarEscenario(int presas, int depredadores) {
-        generarEscenario(presas, depredadores, 0, null, false, null);
-    }
-
-    public void generarEscenario(int presas,
-            int depredadores,
-            int terceras,
-            String varianteTercera) {
-        generarEscenario(presas, depredadores, terceras, varianteTercera, false, null);
-    }
-
     //NUEVO: con tercera especie + mutaciones:
     public void generarEscenario(int presas,
             int depredadores,

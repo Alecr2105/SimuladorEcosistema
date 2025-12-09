@@ -41,9 +41,6 @@ public class EcosistemaController {
 
     private String escenarioActual = "Equilibrado";
     private int maxTurnos = 15;
-
-    private boolean mutacionesActivas = false;
-    private String tipoMutacionActual = null;
     
     //Flags de control y verificacion de cambios de extensión:
     private boolean ecosistemaGenerado = false;//Marcamos si se generó un ecosistema

@@ -18,10 +18,6 @@ public class EcosistemaService {
     //MÉTODOS PRINCIPALES:
     //******************************************************************************
     //Generamos los escenarios:
-    public void generarEscenario(int presas, int depredadores) {
-        ecosistema.generarEscenario(presas, depredadores);
-    }
-
     public void generarEscenario(int presas,
             int depredadores,
             int terceras,
